@@ -1,0 +1,10 @@
+/* Make the progress bar red and 3px thick */
+#nprogress .bar {
+  background: #f11946;
+  height: 3px;
+}
+
+/* Remove spinner if you don't want it */
+#nprogress .spinner {
+  display: none;
+}

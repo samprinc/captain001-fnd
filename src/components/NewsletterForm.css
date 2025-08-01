@@ -1,0 +1,29 @@
+.newsletter-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.newsletter-form input {
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.newsletter-form button {
+  background-color: #0077cc;
+  color: white;
+  border: none;
+  padding: 8px;
+  cursor: pointer;
+}
+
+.success-message {
+  color: green;
+  font-size: 0.9rem;
+}
+
+.error-message {
+  color: red;
+  font-size: 0.9rem;
+}

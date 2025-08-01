@@ -1,0 +1,83 @@
+/* Partners Page Styling */
+.partners-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+  font-family: 'Segoe UI', sans-serif;
+  background: #fdfdfd;
+}
+
+.partners-container h2 {
+  text-align: center;
+  font-size: 2rem;
+  margin-bottom: 2rem;
+  color: #333;
+}
+
+.partners-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 2rem;
+  justify-items: center;
+  align-items: center;
+}
+
+.partners-grid a {
+  display: block;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+.partners-grid img {
+  max-width: 100%;
+  max-height: 80px;
+  object-fit: contain;
+  filter: grayscale(40%);
+  transition: filter 0.3s ease, transform 0.3s ease;
+}
+
+.partners-grid a:hover img {
+  filter: none;
+  transform: scale(1.05);
+}
+
+/* Shared banner section (on Home page) */
+.partners-banner {
+  padding: 3rem 1rem;
+  background: #fff;
+  text-align: center;
+  border-top: 1px solid #eee;
+  border-bottom: 1px solid #eee;
+}
+
+.partners-banner h2 {
+  font-size: 1.75rem;
+  margin-bottom: 1rem;
+  color: #222;
+}
+
+.partners-scroller {
+  display: flex;
+  gap: 2rem;
+  overflow-x: auto;
+  padding: 1rem 0;
+  scrollbar-width: thin;
+}
+
+.partner-logo {
+  flex: 0 0 auto;
+  display: inline-block;
+  transition: transform 0.3s ease;
+}
+
+.partner-logo img {
+  height: 60px;
+  max-width: 100%;
+  object-fit: contain;
+  filter: grayscale(50%);
+  transition: filter 0.3s ease, transform 0.3s ease;
+}
+
+.partner-logo:hover img {
+  filter: grayscale(0%);
+  transform: scale(1.1);
+}

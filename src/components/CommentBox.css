@@ -1,0 +1,31 @@
+.comment-box {
+  background-color: #f9f9f9;
+  border: 1px solid #ddd;
+  padding: 16px;
+  border-radius: 8px;
+  margin-bottom: 15px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+}
+
+.comment-header {
+  margin-bottom: 8px;
+  font-size: 1rem;
+  color: #333;
+}
+
+.comment-author {
+  color: #0057a3;
+}
+
+.comment-status {
+  color: #a00;
+  font-size: 0.9rem;
+  font-style: italic;
+  margin-left: 8px;
+}
+
+.comment-content {
+  font-size: 1rem;
+  color: #444;
+  line-height: 1.5;
+}

@@ -1,0 +1,170 @@
+.posts-container {
+  padding: 40px 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.posts-title {
+  font-size: 2.5rem;
+  text-align: center;
+  margin-bottom: 30px;
+  color: #333;
+}
+
+.posts-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 20px;
+}
+
+.error-message {
+  color: red;
+  text-align: center;
+  margin-top: 20px;
+  font-size: 1.1rem;
+}
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+.filters select,
+.filters input {
+  padding: 0.5rem;
+  font-size: 1rem;
+}
+.active-filters span {
+  background: #f1f1f1;
+  padding: 0.4rem 0.7rem;
+  margin-right: 0.5rem;
+  border-radius: 4px;
+  font-size: 0.85rem;
+}
+.posts-grid {
+  display: grid;
+  gap: 1.5rem;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+}
+.load-more-container {
+  text-align: center;
+  margin-top: 2rem;
+}
+.load-more-button {
+  padding: 0.8rem 2rem;
+  background-color: #222;
+  color: white;
+  font-size: 1rem;
+  border: none;
+  cursor: pointer;
+  border-radius: 6px;
+}
+.filters {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.filters select {
+  padding: 0.5rem;
+  font-size: 1rem;
+}
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+.filters select,
+.filters input {
+  padding: 0.5rem;
+  font-size: 1rem;
+}
+.active-filters span {
+  background: #eee;
+  padding: 0.3rem 0.6rem;
+  margin-right: 0.5rem;
+  border-radius: 4px;
+  font-size: 0.85rem;
+}
+.pagination {
+  margin-top: 2rem;
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+}
+.pagination button {
+  padding: 0.6rem 1.2rem;
+  background-color: #222;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+    
+/* Posts Header */
+.posts-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+/* Search Toggle Button */
+.search-toggle {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: #333;
+  transition: color 0.2s;
+  padding: 5px;
+}
+
+.search-toggle:hover {
+  color: #0066cc;
+}
+
+.posts-search-container {
+  width: 0;
+  overflow: hidden;
+  transition: width 0.3s ease;
+  margin-bottom: 20px;
+}
+
+.posts-search-container.visible {
+  width: 100%;
+}
+
+@media (max-width: 768px) {
+  .posts-search-container.visible {
+    position: relative;
+    top: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    background: white;
+    padding: 10px;
+    z-index: 10;
+  }
+}
+.search-container input {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  width: calc(100% - 120px);
+  font-size: 1rem;
+}
+.search-button {
+  padding: 10px 15px;
+  background: #0066cc;
+  color: white;
+  border: none;
+  border-radius: 0 4px 4px 0;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.search-button:hover {
+  background: #0055aa;
+}
+
