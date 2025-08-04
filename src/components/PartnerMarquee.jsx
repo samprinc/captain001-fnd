@@ -8,7 +8,7 @@ function PartnerMarquee({ partners = [] }) {
 
   return (
     <section className="partner-marquee">
-      <h2 className="marquee-title">Trusted By Industry Leaders</h2>
+      <h2 className="marquee-title">Our Partners</h2>
       <div className="marquee-track">
         {scrollingPartners.map((partner, index) => {
           const logoUrl = partner.logo?.startsWith("http")

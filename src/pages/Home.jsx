@@ -7,65 +7,81 @@ import FeaturedCard from "../components/FeaturedCard";
 import TrendingItem from "../components/TrendingItem";
 import NewsletterForm from "../components/NewsletterForm";
 import PartnerMarquee from "../components/PartnerMarquee";
-
+import AdCarousel from "../components/AdCarousel";
+import InlineAd from "../components/InlineAd";
+import Spinner from "../components/Spinner";
 import "./Home.css";
 
+// Helper function to shuffle an array
+const shuffleArray = (array) => {
+  if (!Array.isArray(array)) return [];
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+  return array;
+};
+
 function Home() {
-  const [ads, setAds] = useState([]);
-  const [news, setNews] = useState([]);
-  const [partners, setPartners] = useState([]);
+  const [data, setData] = useState({
+    ads: [],
+    news: [],
+    partners: [],
+  });
   const [loading, setLoading] = useState(true);
-  const [activeAdIndex, setActiveAdIndex] = useState(0);
 
   useEffect(() => {
     startProgress();
-    Promise.all([fetchAds(), fetchPosts(), fetchPartners()])
-      .then(([adsRes, newsRes, partnersRes]) => {
-        setAds(adsRes.data.results || []);
-        setNews(newsRes.data.results.map(p => formatPost(p, "Latest News")));
-        setPartners(partnersRes.data.results || []);
-      })
-      .catch(err => console.error("Error fetching homepage data:", err))
-      .finally(() => {
-        setLoading(false);
-        stopProgress();
+    const fetchData = async () => {
+      const results = await Promise.allSettled([
+        fetchAds(),
+        fetchPosts(),
+        fetchPartners(),
+      ]);
+
+      const [adsRes, newsRes, partnersRes] = results;
+
+      const allNews =
+        newsRes.status === "fulfilled" && newsRes.value.data.results
+          ? newsRes.value.data.results.map((p) => formatPost(p, "Latest News"))
+          : [];
+
+      setData({
+        ads: adsRes.status === "fulfilled" ? adsRes.value.data.results || [] : [],
+        news: allNews,
+        partners: partnersRes.status === "fulfilled" ? partnersRes.value.data.results || [] : [],
       });
+
+      setLoading(false);
+      stopProgress();
+    };
+
+    fetchData();
   }, []);
 
-  useEffect(() => {
-    if (ads.length > 1) {
-      const interval = setInterval(() => {
-        setActiveAdIndex((prev) => (prev + 1) % ads.length);
-      }, 5000);
-      return () => clearInterval(interval);
-    }
-  }, [ads.length]);
+  // --- 📰 Content Slicing & Filtering Logic ---
+  const featuredPost = data.news[0] || null;
 
-  if (loading) return <div>Loading...</div>;
+  // The next 5 articles (from index 1 to 5) are for the trending section.
+  const trendingPosts = data.news
+    .slice(1, 6)
+    .sort((a, b) => b.views - a.views);
 
-  const featuredPost = news[0] || null;
+  // All remaining articles (from index 6 onwards) are for the latest news.
+  const latestNews = data.news.slice(6);
 
-  const trendingPosts = [...news]
-    .sort((a, b) => b.views - a.views)
-    .slice(0, 5);
-
-  const renderCategorySection = (category) => {
-    const categoryPosts = news
-      .filter(post => post.category.toLowerCase() === category.toLowerCase())
-      .slice(0, 3);
-
-    return categoryPosts.length > 0 ? (
-      <div className="category-column" key={category}>
-        <h3>{category}</h3>
-        {categoryPosts.map(post => (
-          <NewsCard key={post.id} post={post} layout="vertical" />
-        ))}
+  // --- 🖼️ UI Rendering ---
+  if (loading) {
+    return (
+      <div className="loading-state">
+        <Spinner />
       </div>
-    ) : null;
-  };
+    );
+  }
 
   return (
     <div className="home-container">
+      {/* Hero Section with Featured and Trending */}
       {featuredPost && (
         <section className="hero-section">
           <div className="hero-featured">
@@ -82,94 +98,35 @@ function Home() {
         </section>
       )}
 
-      {ads.length > 0 && (
-        <section className="premium-ad-carousel">
-          <div className="ad-carousel-inner">
-            {ads.slice(0, 3).map((ad, index) => (
-              <div
-                key={ad.id}
-                className={`ad-slide ${index === activeAdIndex ? "active" : ""}`}
-              >
-                <a href={ad.link || "#"} target="_blank" rel="noreferrer">
-                  <img
-                    src={ad.image || "/default-news-image.jpeg"}
-                    alt={ad.title || "Advertisement"}
-                  />
-                  <div className="ad-content">
-                    <span className="ad-badge">Sponsored</span>
-                    <h3>{ad.title || "Special Offer"}</h3>
-                    <p>{ad.description || "Limited time only!"}</p>
-                  </div>
-                </a>
-              </div>
-            ))}
-          </div>
-          <div className="ad-controls">
-            {ads.slice(0, 3).map((_, index) => (
-              <button
-                key={index}
-                className={index === activeAdIndex ? "active" : ""}
-                onClick={() => setActiveAdIndex(index)}
-                aria-label={`View ad ${index + 1}`}
-              />
-            ))}
-          </div>
-        </section>
-      )}
-
-      {/* Main News Feed */}
-      <div className="content-grid">
+      {/* Main Content Grid */}
+      <div className="main-content-grid">
         <main className="news-feed">
-          <h2 className="section-title">Latest Updates</h2>
-          {news.map((post, index) => (
-            <div key={post.id} className="news-item">
-              <NewsCard post={post} layout="horizontal" />
-              {(index + 1) % 3 === 0 && ads[index % ads.length] && (
-                <div className="inline-ad">
-                  <a
-                    href={ads[index % ads.length].link || "#"}
-                    target="_blank"
-                    rel="noreferrer"
-                  >
-                    <img
-                      src={ads[index % ads.length].image || "/default-ad.jpg"}
-                      alt="Advertisement"
-                    />
-                    <div className="ad-label">Sponsored Content</div>
-                  </a>
-                </div>
-              )}
+          <h2 className="section-title">Latest News</h2>
+          {latestNews.length > 0 ? (
+            <div className="news-feed-grid">
+              {latestNews.map((post) => (
+                <NewsCard key={post.id} post={post} />
+              ))}
             </div>
-          ))}
+          ) : (
+            <p className="no-content-message">No news articles found at this time.</p>
+          )}
         </main>
+
+        {/* Sidebar */}
+        <aside className="sidebar">
+          {data.ads.length > 0 ? <AdCarousel ads={data.ads} /> : <p>No ads available.</p>}
+          <div className="newsletter-card">
+            <h3>Stay Updated</h3>
+            <p>Subscribe to our newsletter for the latest updates from the ministry</p>
+            <NewsletterForm />
+          </div>
+          {data.ads.length > 0 ? <InlineAd ads={data.ads} /> : <p>No inline ads available.</p>}
+        </aside>
       </div>
 
-      {/* Standalone Sidebar below */}
-      <aside className="sidebar standalone-sidebar">
-        <div className="newsletter-card">
-          <h3>Stay Updated</h3>
-          <p>Subscribe to our newsletter for daily updates</p>
-          <NewsletterForm />
-        </div>
-
-        <div className="popular-posts">
-          <h3>Most Popular</h3>
-          {[...news]
-            .sort((a, b) => b.views - a.views)
-            .slice(0, 4)
-            .map((post) => (
-              <NewsCard key={post.id} post={post} layout="compact" />
-            ))}
-        </div>
-      </aside>
-
-      {/* Category Sections */}
-      <section className="category-sections">
-        {["Technology", "Business", "Entertainment"].map(renderCategorySection)}
-      </section>
-
-      {/* Partner Marquee */}
-      {partners.length > 0 && <PartnerMarquee partners={partners} />}
+      {/* Partners Marquee */}
+      {data.partners.length > 0 && <PartnerMarquee partners={shuffleArray(data.partners)} />}
     </div>
   );
 }

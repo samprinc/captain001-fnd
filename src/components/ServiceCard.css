@@ -1,62 +1,50 @@
+/* src/components/ServiceCard.css */
+
+.service-card-link {
+  text-decoration: none;
+  color: inherit;
+  display: block;
+}
+
 .service-card {
   background-color: #ffffff;
   border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-  padding: 20px;
-  text-align: center;
-  transition: transform 0.3s ease;
-  max-width: 100%;
-  width: 300px;
-  margin: auto;
-}
-
-.service-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
-}
-
-.icon-wrapper {
-  margin-bottom: 16px;
-}
-
-.service-icon {
-  width: 200px;
-  object-fit: cover;
-  background-color: #f4f4f4;
-  padding: 8px;
-}
-
-.service-card h3 {
-  font-size: 1.2rem;
-  color: #333333;
-  margin-bottom: 10px;
-}
-
-.service-card p {
-  font-size: 1rem;
-  color: #666666;
-  margin-bottom: 16px;
-  line-height: 1.5;
-}
-
-.learn-more-btn {
-  background-color: #0056b3;
-  color: #ffffff;
-  border: none;
-  padding: 10px 16px;
-  border-radius: 25px;
-  cursor: pointer;
-  font-size: 0.95rem;
-  display: inline-flex;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: 8px;
-  transition: background-color 0.3s ease;
+  text-align: center;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  height: 100%;
 }
 
-.learn-more-btn:hover {
-  background-color: #003d80;
+.service-card-link:hover .service-card {
+  transform: translateY(-10px);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
 }
 
-.arrow-icon {
-  font-size: 0.95rem;
+.service-card-icon {
+  font-size: 4rem; /* Adjusted for Font Awesome icons */
+  color: #1a237e;
+  margin-bottom: 1rem;
+}
+
+.service-card-icon img {
+  width: 96px; /* A consistent, larger size for images */
+  height: 96px;
+  object-fit: contain;
+}
+
+.service-card-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 0.5rem;
+}
+
+.service-card-description {
+  font-size: 1rem;
+  color: #666;
+  line-height: 1.5;
 }

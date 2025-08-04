@@ -1,0 +1,33 @@
+.inline-ad {
+  margin: 2rem 0;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 3px 8px rgba(0,0,0,0.08);
+  position: relative;
+  background: #fff;
+}
+
+.inline-ad img {
+  width: 100%;
+  height: 160px;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.inline-ad:hover img {
+  transform: scale(1.02);
+}
+
+.inline-ad .ad-label {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: rgba(0,0,0,0.6);
+  color: white;
+  padding: 4px 8px;
+  font-size: 0.75rem;
+  border-radius: 6px;
+}
+.inline-ad .ad-label:hover {
+  background: rgba(0,0,0,0.8);
+}

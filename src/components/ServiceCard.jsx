@@ -1,43 +1,39 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { FaArrowRight } from "react-icons/fa";
-import Spinner from "../components/Spinner";
+import { Link } from "react-router-dom";
 import "./ServiceCard.css";
 
-function ServiceCard({ title, description, icon, loading }) {
-  if (loading) return <Spinner />;
-
-  const imageUrl = icon?.startsWith("http")
-    ? icon
-    : `https://res.cloudinary.com/dco3yxmss/${icon}`;
+function ServiceCard({ title, description, icon, to }) {
+  const isFontAwesome = icon?.startsWith("fa");
+  const imageUrl = isFontAwesome ? null : `https://res.cloudinary.com/dco3yxmss/${icon}`;
 
   return (
-    <div className="service-card">
-      <div className="icon-wrapper">
-        {icon && <img src={imageUrl} alt={title} className="service-icon" />}
+    <Link to={to} className="service-card-link">
+      <div className="service-card">
+        <div className="service-card-icon">
+          {isFontAwesome ? (
+            <i className={`${icon}`}></i>
+          ) : (
+            <img src={imageUrl} alt={`${title} icon`} />
+          )}
+        </div>
+
+        <h3 className="service-card-title">{title}</h3>
+        <p className="service-card-description">{description}</p>
       </div>
-
-      <h3>{title}</h3>
-      <p>{description}</p>
-
-      <button className="learn-more-btn">
-        Learn More <FaArrowRight className="arrow-icon" />
-      </button>
-    </div>
+    </Link>
   );
 }
 
 ServiceCard.propTypes = {
   title: PropTypes.string.isRequired,
   description: PropTypes.string.isRequired,
-  icon: PropTypes.string, // <- Now it's a string
-  loading: PropTypes.bool,
+  icon: PropTypes.string,
+  to: PropTypes.string.isRequired,
 };
 
 ServiceCard.defaultProps = {
-  icon: null,
-  loading: false,
+  icon: "fas fa-cogs",
 };
-
 
 export default ServiceCard;

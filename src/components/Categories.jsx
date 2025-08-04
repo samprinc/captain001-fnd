@@ -35,9 +35,9 @@ function Categories() {
         {categories.map((category) => (
           <Link
             key={category.id}
-            to={`/news?category=${encodeURIComponent(category.name)}`}
+            to={`/news?category=${category.id}`}
             className={`category-link ${
-              activeCategory === category.name ? "active" : ""
+              activeCategory === String(category.id) ? "active" : ""
             }`}
           >
             {category.name}

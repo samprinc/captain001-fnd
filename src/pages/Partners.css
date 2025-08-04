@@ -1,83 +1,92 @@
-/* Partners Page Styling */
-.partners-container {
+/* src/components/Partners.css */
+
+.partners-page-container {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 2rem 1rem;
-  font-family: 'Segoe UI', sans-serif;
-  background: #fdfdfd;
+  padding: 40px 20px;
+  text-align: center;
 }
 
-.partners-container h2 {
-  text-align: center;
-  font-size: 2rem;
-  margin-bottom: 2rem;
-  color: #333;
+.partners-intro h2 {
+  font-size: 2.5rem;
+  color: var(--primary-color);
+  margin-bottom: 10px;
+}
+
+.partners-intro p {
+  font-size: 1.1rem;
+  color: var(--text-color);
+  max-width: 800px;
+  margin: 0 auto 40px;
 }
 
 .partners-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-  gap: 2rem;
-  justify-items: center;
-  align-items: center;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 30px;
+  margin-bottom: 60px;
 }
 
-.partners-grid a {
-  display: block;
-  transition: transform 0.3s ease, opacity 0.3s ease;
-}
-
-.partners-grid img {
-  max-width: 100%;
-  max-height: 80px;
-  object-fit: contain;
-  filter: grayscale(40%);
-  transition: filter 0.3s ease, transform 0.3s ease;
-}
-
-.partners-grid a:hover img {
-  filter: none;
-  transform: scale(1.05);
-}
-
-/* Shared banner section (on Home page) */
-.partners-banner {
-  padding: 3rem 1rem;
-  background: #fff;
-  text-align: center;
-  border-top: 1px solid #eee;
-  border-bottom: 1px solid #eee;
-}
-
-.partners-banner h2 {
-  font-size: 1.75rem;
-  margin-bottom: 1rem;
-  color: #222;
-}
-
-.partners-scroller {
+.partner-card {
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
   display: flex;
-  gap: 2rem;
-  overflow-x: auto;
-  padding: 1rem 0;
-  scrollbar-width: thin;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.partner-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.partner-link {
+  text-decoration: none;
+  color: inherit;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
 }
 
 .partner-logo {
-  flex: 0 0 auto;
-  display: inline-block;
-  transition: transform 0.3s ease;
+  max-width: 120px; /* Adjust as needed */
+  height: auto;
+  margin-bottom: 15px;
+  border-radius: 50%;
+  border: 1px solid #e0e0e0;
 }
 
-.partner-logo img {
-  height: 60px;
-  max-width: 100%;
-  object-fit: contain;
-  filter: grayscale(50%);
-  transition: filter 0.3s ease, transform 0.3s ease;
+.partner-card h3 {
+  font-size: 1.5rem;
+  color: var(--primary-color);
+  margin: 0 0 10px;
 }
 
-.partner-logo:hover img {
-  filter: grayscale(0%);
-  transform: scale(1.1);
+.partner-card p {
+  font-size: 1rem;
+  color: #666;
+  line-height: 1.5;
+}
+
+.company-profile-section {
+  text-align: left;
+  border-top: 1px solid #e0e0e0;
+  padding-top: 40px;
+}
+
+.company-profile-section h3 {
+  font-size: 2rem;
+  color: var(--text-color);
+  margin-bottom: 15px;
+}
+
+.company-profile-section p {
+  font-size: 1.1rem;
+  color: #555;
+  line-height: 1.6;
 }

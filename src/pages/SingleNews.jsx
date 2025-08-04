@@ -26,7 +26,7 @@ function SingleNews() {
         setLoading(true);
         const response = await fetchPost(id);
         setPost(response.data);
-        setComments(response.data.comments || []);
+        setComments(Array.isArray(response.data.comments) ? response.data.comments : []);
         setError(null);
       } catch (err) {
         console.error("Error fetching post:", err);
@@ -41,10 +41,9 @@ function SingleNews() {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
-    // Clear error when user starts typing
+    setFormData((prev) => ({ ...prev, [name]: value }));
     if (formErrors[name]) {
-      setFormErrors(prev => ({ ...prev, [name]: "" }));
+      setFormErrors((prev) => ({ ...prev, [name]: "" }));
     }
   };
 
@@ -54,7 +53,7 @@ function SingleNews() {
     if (!formData.email.trim()) {
       errors.email = "Email is required";
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-      errors.email = "Please enter a valid email";
+      errors.email = "Please enter a valid email address";
     }
     if (!formData.content.trim()) errors.content = "Comment cannot be empty";
     return errors;
@@ -70,17 +69,18 @@ function SingleNews() {
 
     try {
       setSubmissionState("submitting");
-      await submitComment(formData);
+      const newComment = await submitComment(formData);
       setSubmissionState("success");
       setFormData({ name: "", email: "", content: "", post: id });
-      // Optimistically update comments (assuming API would return the new comment)
-      setComments(prev => [...prev, {
-        id: Date.now(), // temporary ID
+
+      // Add the new comment to the list directly, no approval status needed
+      setComments((prev) => [...prev, newComment.data || {
+        id: Date.now(), // Fallback to a temporary ID
         name: formData.name,
         content: formData.content,
-        approved: false,
         createdAt: new Date().toISOString()
       }]);
+
     } catch (err) {
       console.error("Failed to submit comment:", err);
       setSubmissionState("error");
@@ -96,17 +96,16 @@ function SingleNews() {
     : `https://res.cloudinary.com/dco3yxmss/${post.image}`;
 
   return (
-    <article className="single-post">
+    <article className="single-post-container">
       <header className="post-header">
         <h1 className="post-title">{post.title}</h1>
-        
         <div className="post-meta">
           <span className="post-author">By {post.author?.name || "Unknown Author"}</span>
           <span className="post-date">
             {new Date(post.publish_at).toLocaleDateString("en-US", {
               year: "numeric",
               month: "long",
-              day: "numeric"
+              day: "numeric",
             })}
           </span>
           {post.category && (
@@ -117,9 +116,9 @@ function SingleNews() {
 
       {post.image && (
         <figure className="post-image-container">
-          <img 
-            src={imageUrl} 
-            alt={post.title} 
+          <img
+            src={imageUrl}
+            alt={post.title}
             className="post-image"
             loading="lazy"
           />
@@ -129,15 +128,14 @@ function SingleNews() {
         </figure>
       )}
 
-      <div 
-        className="post-content" 
+      <div
+        className="post-content"
         dangerouslySetInnerHTML={{ __html: post.content }}
       />
 
       <section className="comments-section">
         <h2 className="section-title">
-          Comments ({comments.filter(c => c.approved).length})
-          {comments.some(c => !c.approved) && " (Pending approval)"}
+          Comments ({comments.length})
         </h2>
 
         {comments.length === 0 ? (
@@ -150,7 +148,7 @@ function SingleNews() {
                 name={comment.name}
                 content={comment.content}
                 date={comment.createdAt}
-                approved={comment.approved}
+                // No 'approved' prop is passed to CommentBox anymore
               />
             ))}
           </div>
@@ -158,16 +156,17 @@ function SingleNews() {
 
         <div className="comment-form-container">
           <h3 className="form-title">Leave a Comment</h3>
-          
+          <p className="form-subtitle">Required fields are marked *</p>
+
           {submissionState === "success" && (
             <div className="alert success">
-              <span>✅</span> Comment submitted! It will appear after approval.
+              <span className="icon">✅</span> Your comment has been posted successfully!
             </div>
           )}
-          
+
           {submissionState === "error" && (
             <div className="alert error">
-              <span>⚠️</span> Failed to submit comment. Please try again.
+              <span className="icon">⚠️</span> Failed to submit comment. Please try again.
             </div>
           )}
 
@@ -184,7 +183,7 @@ function SingleNews() {
               />
               {formErrors.name && <span className="error-message">{formErrors.name}</span>}
             </div>
-            
+
             <div className="form-group">
               <input
                 type="email"
@@ -197,7 +196,7 @@ function SingleNews() {
               />
               {formErrors.email && <span className="error-message">{formErrors.email}</span>}
             </div>
-            
+
             <div className="form-group">
               <textarea
                 name="content"
@@ -210,14 +209,16 @@ function SingleNews() {
               />
               {formErrors.content && <span className="error-message">{formErrors.content}</span>}
             </div>
-            
-            <button 
-              type="submit" 
+
+            <button
+              type="submit"
               className="submit-button"
               disabled={submissionState === "submitting"}
             >
               {submissionState === "submitting" ? (
-                <span className="spinner"></span>
+                <>
+                  <span className="button-spinner"></span> Submitting...
+                </>
               ) : (
                 "Post Comment"
               )}

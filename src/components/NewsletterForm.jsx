@@ -9,7 +9,7 @@ function NewsletterForm() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post("http://127.0.0.1:8000/api/newsletter/"  , { email });
+      await axios.post("http://127.0.0.1:8000/api/newsletter/", { email });
       setSuccess(true);
       setEmail("");
     } catch (error) {
@@ -19,12 +19,18 @@ function NewsletterForm() {
 
   return (
     <form onSubmit={handleSubmit}>
+      <label htmlFor="newsletter-email" className="visually-hidden">
+        Email Address
+      </label>
       <input 
         type="email"
+        id="newsletter-email"
+        name="email"
         placeholder="Your email address"
         value={email}
         onChange={(e) => setEmail(e.target.value)}
         required
+        autoComplete="email"
       />
       <button type="submit">Subscribe</button>
       {success && <p className="success-message">Thank you for subscribing!</p>}

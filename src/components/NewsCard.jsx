@@ -1,30 +1,38 @@
+// src/components/NewsCard.jsx
 import { Link } from "react-router-dom";
+import { formatImage } from "../utils/formatImage";
+import { formatTimeAgo } from "../utils/dateFormatter";
 import "./PostCard.css";
 
-function NewsCard({ post, id, title, image, content, layout = "horizontal" }) {
-  // Prefer post destructure if provided
-  const _id = post?.id || id;
-  const _title = post?.title || title;
-  const _image = post?.image || image;
-  const _content = post?.content || content;
-  const snippet = _content
-    ? _content.length > 120
-      ? _content.slice(0, 120).replace(/<[^>]+>/g, "") + "..."
-      : _content.replace(/<[^>]+>/g, "")
+function NewsCard({ post, layout = "horizontal" }) {
+  const fullImageUrl = formatImage(post?.image);
+  const timeAgo = formatTimeAgo(post.publish_at);
+
+  const snippet = post?.content
+    ? post.content.replace(/<[^>]+>/g, "").slice(0, 130) + "..."
     : post?.excerpt || "";
 
-  const fullImageUrl = _image?.startsWith("http")
-    ? _image
-    : `https://res.cloudinary.com/dco3yxmss/${_image}`;
-
   return (
-    <div className={`post-card ${layout}`}>
-      {_image && <img src={fullImageUrl} alt={_title} className="post-image" />}
-      <div className="post-content">
-        <h3>{_title}</h3>
-        <p>{snippet}</p>
-        <Link to={`/news/${_id}`} className="read-more">
-          Read More
+    <div className={`news-card ${layout}`}>
+      {fullImageUrl && (
+        <div className="news-thumb">
+          <img src={fullImageUrl} alt={post.title} loading="lazy" />
+        </div>
+      )}
+      <div className="news-body">
+        <h3 className="news-title">
+          <Link to={`/news/${post.id}`}>{post.title}</Link>
+        </h3>
+        {/* Updated line to include the icon */}
+        {timeAgo && (
+          <span className="post-meta">
+            <i className="fas fa-clock"></i>
+            <span className="post-date">{timeAgo}</span>
+          </span>
+        )}
+        <p className="news-snippet">{snippet}</p>
+        <Link to={`/news/${post.id}`} className="read-more">
+          Read More →
         </Link>
       </div>
     </div>
