@@ -27,10 +27,7 @@ function Footer() {
             <li><Link to="/author">Our Authors</Link></li>
             <li><Link to="/experts">Our Experts</Link></li>
             <li><Link to="/contact">Contact Us</Link></li>
-            <li><Link to="/media-mentions">Media Mentions</Link></li>
-            <li><Link to="/manifesto">Our Manifesto</Link></li>
-            <li><Link to="/careers">Work for Us</Link></li>
-            <li><Link to="/advertise">Advertise with Us</Link></li>
+           
           </ul>
         </div>
 
