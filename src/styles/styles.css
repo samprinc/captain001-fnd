@@ -9,6 +9,15 @@ body {
   background: #f8f8f8;
   color: #333;
 }
+.container,
+.home-container,
+.content-grid,
+.featured-card,
+.hero-section,
+.ad-carousel-inner {
+  max-width: 100%;
+  overflow-x: hidden;
+}
 
 a {
   text-decoration: none;

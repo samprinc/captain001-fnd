@@ -10,16 +10,16 @@ function ServiceCard({ title, description, icon, to }) {
   return (
     <Link to={to} className="service-card-link">
       <div className="service-card">
-        <div className="service-card-icon">
-          {isFontAwesome ? (
-            <i className={`${icon}`}></i>
-          ) : (
-            <img src={imageUrl} alt={`${title} icon`} />
-          )}
+        {imageUrl && (
+          <div className="service-card-image-container">
+            <img src={imageUrl} alt={title} className="service-card-image" />
+          </div>
+        )}
+        <div className="service-card-content">
+          <h3 className="service-card-title">{title}</h3>
+          <p className="service-card-description">{description}</p>
+          <span className="service-card-cta">Book Now →</span>
         </div>
-
-        <h3 className="service-card-title">{title}</h3>
-        <p className="service-card-description">{description}</p>
       </div>
     </Link>
   );
@@ -33,7 +33,7 @@ ServiceCard.propTypes = {
 };
 
 ServiceCard.defaultProps = {
-  icon: "fas fa-cogs",
+  icon: null,
 };
 
 export default ServiceCard;

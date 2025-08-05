@@ -1,11 +1,17 @@
 import { useEffect, useState, useCallback } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { fetchPosts, fetchCategories, fetchTags } from "../api/api";
+import {
+  fetchPosts,
+  fetchCategories,
+  fetchTags,
+  fetchAds,
+} from "../api/api";
 import NewsCard from "../components/NewsCard";
 import { startProgress, stopProgress } from "../utils/nprogress";
 import "./News.css";
 import { Helmet } from "react-helmet";
-import Spinner from "../components/Spinner"; // Make sure to have a Spinner component
+import Spinner from "../components/Spinner";
+import MobileAd from "../components/MobileAd";
 
 function Posts() {
   const location = useLocation();
@@ -14,6 +20,8 @@ function Posts() {
   const [posts, setPosts] = useState([]);
   const [categories, setCategories] = useState([]);
   const [tags, setTags] = useState([]);
+  const [ads, setAds] = useState([]);
+
   const [loading, setLoading] = useState(true);
   const [loadingMore, setLoadingMore] = useState(false);
   const [error, setError] = useState("");
@@ -27,17 +35,15 @@ function Posts() {
   const [hasNext, setHasNext] = useState(false);
   const [isSearchVisible, setIsSearchVisible] = useState(false);
 
-  // === DATA FETCHING & STATE MANAGEMENT ===
-  // Fetch initial data (categories and tags)
+  // Load filter options
   useEffect(() => {
     fetchCategories().then((res) => setCategories(res.data.results));
     fetchTags().then((res) => setTags(res.data.results));
+    fetchAds().then((res) => setAds(res.data.results));
   }, []);
 
-  // Fetch posts based on URL parameters
   const fetchPostsFromAPI = useCallback(
     async (pageNum = 1, replace = false) => {
-      // Use a separate loading state for initial load vs infinite scroll
       if (pageNum === 1) {
         startProgress();
         setLoading(true);
@@ -72,24 +78,24 @@ function Posts() {
     [search, selectedCategory, selectedTag, sort]
   );
 
-  // Effect to trigger post fetching when filters/sort change
+  // Parse URL and fetch on filter change
   useEffect(() => {
     const params = new URLSearchParams();
     if (search) params.set("search", search);
     if (selectedCategory) params.set("category", selectedCategory);
     if (selectedTag) params.set("tag", selectedTag);
-    // You can also add sort to the URL if you wish
     navigate(`?${params.toString()}`, { replace: true });
+
     fetchPostsFromAPI(1, true);
   }, [search, selectedCategory, selectedTag, sort, navigate, fetchPostsFromAPI]);
 
-  // Effect for infinite scroll
+  // Infinite scroll
   useEffect(() => {
     const handleScroll = () => {
       if (
         window.innerHeight + window.scrollY >= document.body.offsetHeight - 200 &&
         !loading &&
-        !loadingMore && // Prevent multiple fetches
+        !loadingMore &&
         hasNext
       ) {
         fetchPostsFromAPI(page + 1);
@@ -100,14 +106,7 @@ function Posts() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, [loading, loadingMore, hasNext, page, fetchPostsFromAPI]);
 
-  // === HANDLERS ===
-  const handleCategoryChange = (e) => setSelectedCategory(e.target.value);
-  const handleTagChange = (e) => setSelectedTag(e.target.value);
-  const handleSortChange = (e) => setSort(e.target.value);
-  const handleSearchSubmit = (e) => {
-    e.preventDefault();
-    fetchPostsFromAPI(1, true);
-  };
+  // Handlers
   const clearFilters = () => {
     setSearch("");
     setSelectedCategory("");
@@ -118,12 +117,10 @@ function Posts() {
 
   const toggleSearch = () => setIsSearchVisible(!isSearchVisible);
 
-  // === RENDER ===
   return (
     <div className="posts-container">
-      {/* CORRECT HELMET PLACEMENT */}
       <Helmet>
-        <title>Latest News | Your Church Website</title>
+        <title>Latest News | CaptainMedia</title>
         <meta name="description" content="Browse the latest news posts, filtered by category, tag, or keyword." />
       </Helmet>
 
@@ -132,8 +129,11 @@ function Posts() {
         <button className="search-toggle" onClick={toggleSearch}>🔍</button>
       </div>
 
-      <div className={`posts-search-container ${isSearchVisible ? "visible" : ""}`}>
-        <form onSubmit={handleSearchSubmit}>
+      {isSearchVisible && (
+        <form className="posts-search-container" onSubmit={(e) => {
+          e.preventDefault();
+          fetchPostsFromAPI(1, true);
+        }}>
           <input
             type="text"
             placeholder="Search posts..."
@@ -142,52 +142,53 @@ function Posts() {
           />
           <button className="search-button" type="submit">Search</button>
         </form>
-      </div>
+      )}
 
       <div className="filters">
-        <select onChange={handleCategoryChange} value={selectedCategory}>
+        <select onChange={(e) => setSelectedCategory(e.target.value)} value={selectedCategory}>
           <option value="">All Categories</option>
           {categories.map((cat) => (
             <option key={cat.id} value={cat.id}>{cat.name}</option>
           ))}
         </select>
-        <select onChange={handleTagChange} value={selectedTag}>
+
+        <select onChange={(e) => setSelectedTag(e.target.value)} value={selectedTag}>
           <option value="">All Tags</option>
           {tags.map((tag) => (
             <option key={tag.id} value={tag.id}>{tag.name}</option>
           ))}
         </select>
-        <select onChange={handleSortChange} value={sort}>
+
+        <select onChange={(e) => setSort(e.target.value)} value={sort}>
           <option value="latest">Sort by: Latest</option>
           <option value="oldest">Sort by: Oldest</option>
         </select>
+
         <button onClick={clearFilters}>Clear Filters</button>
       </div>
 
       {(selectedCategory || selectedTag || search) && (
         <div className="active-filters">
-          {selectedCategory && (
-            <span>Category: {categories.find((c) => c.id == selectedCategory)?.name}</span>
-          )}
-          {selectedTag && (
-            <span>Tag: {tags.find((t) => t.id == selectedTag)?.name}</span>
-          )}
+          {selectedCategory && <span>Category: {categories.find((c) => c.id == selectedCategory)?.name}</span>}
+          {selectedTag && <span>Tag: {tags.find((t) => t.id == selectedTag)?.name}</span>}
           {search && <span>Search: “{search}”</span>}
         </div>
       )}
 
-      {error ? (
-        <p className="error-message">{error}</p>
-      ) : (
-        <div className="posts-grid">
-          {posts.map((post) => (
-            // Pass the entire post object for cleaner code
-            <NewsCard key={`${post.id}-${post.title}`} post={post} />
+      {ads.length > 0 && <MobileAd ads={ads} />}
 
-          ))}
-        </div>
+      {error && <p className="error-message">{error}</p>}
+
+      {!loading && posts.length === 0 && (
+        <p className="no-posts-msg">No posts found for this filter/search.</p>
       )}
-      
+
+      <div className="posts-grid">
+        {posts.map((post) => (
+          <NewsCard key={post.id} post={post} />
+        ))}
+      </div>
+
       {loadingMore && <div className="loading-more"><Spinner /></div>}
     </div>
   );

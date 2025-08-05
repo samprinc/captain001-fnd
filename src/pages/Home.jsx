@@ -10,6 +10,7 @@ import PartnerMarquee from "../components/PartnerMarquee";
 import AdCarousel from "../components/AdCarousel";
 import InlineAd from "../components/InlineAd";
 import Spinner from "../components/Spinner";
+import MobileAd from "../components/MobileAd"
 import "./Home.css";
 
 // Helper function to shuffle an array
@@ -31,49 +32,40 @@ function Home() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    startProgress();
-    const fetchData = async () => {
-      const results = await Promise.allSettled([
-        fetchAds(),
-        fetchPosts(),
-        fetchPartners(),
-      ]);
+    const fetchAllData = async () => {
+      startProgress();
+      try {
+        const [adsRes, newsRes, partnersRes] = await Promise.all([
+          fetchAds(),
+          fetchPosts(), // ✅ correct: fetchPosts expects an object, not a string
+          fetchPartners(),
+        ]);
 
-      const [adsRes, newsRes, partnersRes] = results;
+        const news = newsRes.data.results.map((p) =>
+          formatPost(p, "Latest News")
+        );
 
-      const allNews =
-        newsRes.status === "fulfilled" && newsRes.value.data.results
-          ? newsRes.value.data.results.map((p) => formatPost(p, "Latest News"))
-          : [];
-
-      setData({
-        ads: adsRes.status === "fulfilled" ? adsRes.value.data.results || [] : [],
-        news: allNews,
-        partners: partnersRes.status === "fulfilled" ? partnersRes.value.data.results || [] : [],
-      });
-
-      setLoading(false);
-      stopProgress();
+        setData({
+          ads: adsRes.data.results || [],
+          news,
+          partners: partnersRes.data.results || [],
+        });
+      } catch (err) {
+        console.error("Error fetching home page data:", err);
+      } finally {
+        setLoading(false);
+        stopProgress();
+      }
     };
 
-    fetchData();
+    fetchAllData();
   }, []);
 
-// ... (rest of the code)
+  const newsPosts = data.news || [];
+  const featuredPost = newsPosts[0] || null;
+  const trendingPosts = newsPosts.slice(1, 4).sort((a, b) => b.views - a.views);
+  const latestNews = newsPosts.slice(4);
 
- // --- 📰 More Flexible Slicing Logic ---
-   const newsPosts = data.news || [];
-   const featuredPost = newsPosts[0] || null;
-
-  // Use up to 3 posts for trending.
-     const trendingPosts = newsPosts
-      .slice(1, 4) // Indices 1, 2, 3
-     .sort((a, b) => b.views - a.views);
-
- // The remaining posts, from index 4 onwards, are the latest news.
-     const latestNews = newsPosts.slice(4);
-
-  // ... (rest of the code)
   if (loading) {
     return (
       <div className="loading-state">
@@ -84,7 +76,6 @@ function Home() {
 
   return (
     <div className="home-container">
-      {/* Hero Section with Featured and Trending */}
       {featuredPost && (
         <section className="hero-section">
           <div className="hero-featured">
@@ -101,36 +92,51 @@ function Home() {
         </section>
       )}
 
-      {/* Main Content Grid */}
       <div className="main-content-grid">
         <main className="news-feed">
           <h2 className="section-title">Latest News</h2>
           {latestNews.length > 0 ? (
             <div className="news-feed-grid">
               {latestNews.map((post) => (
-                <NewsCard key={`${post.id}-${post.slug || post.title}`} post={post} />
-
+                <NewsCard
+                  key={`${post.id}-${post.slug || post.title}`}
+                  post={post}
+                />
               ))}
             </div>
           ) : (
-            <p className="no-content-message">No news articles found at this time.</p>
+            <p className="no-content-message">
+              No news articles found at this time.
+            </p>
           )}
         </main>
 
-        {/* Sidebar */}
+
         <aside className="sidebar">
-          {data.ads.length > 0 ? <AdCarousel ads={data.ads} /> : <p>No ads available.</p>}
+          {data.ads.length > 0 ? (
+            <AdCarousel ads={data.ads} />
+          ) : (
+            <p>No ads available.</p>
+          )}
           <div className="newsletter-card">
             <h3>Stay Updated</h3>
-            <p>Subscribe to our newsletter for the latest updates from the ministry</p>
+            <p>
+              Subscribe to our newsletter for the latest updates from the
+              ministry
+            </p>
             <NewsletterForm />
           </div>
-          {data.ads.length > 0 ? <InlineAd ads={data.ads} /> : <p>No inline ads available.</p>}
+        
         </aside>
+
+
       </div>
 
-      {/* Partners Marquee */}
-      {data.partners.length > 0 && <PartnerMarquee partners={shuffleArray(data.partners)} />}
+       <MobileAd ads={data.ads} />
+
+      {data.partners.length > 0 && (
+        <PartnerMarquee partners={shuffleArray(data.partners)} />
+      )}
     </div>
   );
 }

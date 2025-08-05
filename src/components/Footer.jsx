@@ -1,7 +1,10 @@
 import "./Footer.css";
 import { Link } from "react-router-dom";
+import { FaFacebookF, FaTwitter, FaInstagram, FaLinkedinIn, FaYoutube, FaTiktok } from "react-icons/fa";
 
 function Footer() {
+  const currentYear = new Date().getFullYear();
+
   return (
     <footer className="site-footer">
       <div className="footer-container">
@@ -9,13 +12,10 @@ function Footer() {
         {/* Social Media */}
         <div className="footer-column">
           <h4>Follow Us</h4>
-          <ul>
-            <li><a href="https://facebook.com" target="_blank" rel="noreferrer">Facebook</a></li>
-            <li><a href="https://twitter.com" target="_blank" rel="noreferrer">Twitter / X</a></li>
-            <li><a href="https://instagram.com" target="_blank" rel="noreferrer">Instagram</a></li>
-            <li><a href="https://linkedin.com" target="_blank" rel="noreferrer">LinkedIn</a></li>
-            <li><a href="https://youtube.com" target="_blank" rel="noreferrer">YouTube</a></li>
-            <li><a href="https://tiktok.com" target="_blank" rel="noreferrer">TikTok</a></li>
+          <ul className="social-links">
+            <li><a href="https://www.facebook.com/profile.php?id=100063722293969" target="_blank" rel="noopener noreferrer" aria-label="Facebook"><FaFacebookF /></a></li>
+            <li><a href="https://www.youtube.com/@ndemojrlive1638" target="_blank" rel="noopener noreferrer" aria-label="YouTube"><FaYoutube /></a></li>
+            <li><a href="https://www.tiktok.com/@ndemojrlive" target="_blank" rel="noopener noreferrer" aria-label="TikTok"><FaTiktok /></a></li>
           </ul>
         </div>
 
@@ -23,14 +23,14 @@ function Footer() {
         <div className="footer-column">
           <h4>Company</h4>
           <ul>
-            <li><a href="/about">About Us</a></li>
-            <li><a href="/author">Our Authors</a></li>
-            <li><a href="/experts">Our Experts</a></li>
-            <li><a href="/contact">Contact Us</a></li>
-            <li><a href="/media-mentions">Media Mentions</a></li>
-            <li><a href="/manifesto">Our Manifesto</a></li>
-            <li><a href="/careers">Work for Us</a></li>
-            <li><a href="/advertise">Advertise with Us</a></li>
+            <li><Link to="/about">About Us</Link></li>
+            <li><Link to="/author">Our Authors</Link></li>
+            <li><Link to="/experts">Our Experts</Link></li>
+            <li><Link to="/contact">Contact Us</Link></li>
+            <li><Link to="/media-mentions">Media Mentions</Link></li>
+            <li><Link to="/manifesto">Our Manifesto</Link></li>
+            <li><Link to="/careers">Work for Us</Link></li>
+            <li><Link to="/advertise">Advertise with Us</Link></li>
           </ul>
         </div>
 
@@ -38,10 +38,10 @@ function Footer() {
         <div className="footer-column">
           <h4>Legal</h4>
           <ul>
-            <li><a href="/privacy-policy">Privacy Policy</a></li>
-            <li><a href="/terms">Terms & Conditions</a></li>
-            <li><a href="/policies">Policies & Standards</a></li>
-            <li><a href="/cookie-policy">Cookie Policy</a></li>
+            <li><Link to="/privacy-policy">Privacy Policy</Link></li>
+            <li><Link to="/terms">Terms & Conditions</Link></li>
+            <li><Link to="/policies">Policies & Standards</Link></li>
+            <li><Link to="/cookie-policy">Cookie Policy</Link></li>
           </ul>
         </div>
 
@@ -49,14 +49,14 @@ function Footer() {
         <div className="footer-column">
           <h4>Explore</h4>
           <ul>
-            <li><a href="/tags">Tags</a></li>
+            <li><Link to="/tags">Tags</Link></li>
             <li><Link to="/categories">Categories</Link></li>
           </ul>
         </div>
       </div>
 
       <div className="footer-bottom">
-        <p>&copy; {new Date().getFullYear()} CaptainMedia. All rights reserved.</p>
+        <p>© {currentYear} CaptainMedia. All rights reserved.</p>
       </div>
     </footer>
   );

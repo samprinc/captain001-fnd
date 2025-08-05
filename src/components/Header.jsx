@@ -1,6 +1,7 @@
 // src/components/Header.jsx
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
+import { FaBars, FaTimes, FaSearch, FaChevronDown } from "react-icons/fa";
 import "./Header.css";
 
 function Header() {
@@ -13,10 +14,10 @@ function Header() {
   const [searchQuery, setSearchQuery] = useState("");
   const navigate = useNavigate();
 
-  const toggleState = (key) => {
+  const toggleState = (key, value) => {
     setUiState((prevState) => ({
       ...prevState,
-      [key]: !prevState[key],
+      [key]: value !== undefined ? value : !prevState[key],
       ...(key === "isMenuOpen" && { isSearchVisible: false }),
       ...(key === "isSearchVisible" && { isMenuOpen: false }),
       ...((key === "isMenuOpen" || key === "isSearchVisible") && {
@@ -87,6 +88,13 @@ function Header() {
     });
   };
 
+  const handleDropdownToggle = (dropdownName) => {
+    setUiState(prevState => ({
+      ...prevState,
+      activeDropdown: prevState.activeDropdown === dropdownName ? null : dropdownName
+    }));
+  };
+
   return (
     <header className={`header ${uiState.isScrolled ? "scrolled" : ""}`}>
       <div className="header-container">
@@ -99,8 +107,15 @@ function Header() {
               {menuLinks.map((link) => (
                 <li key={link.name} className="nav-item">
                   {link.dropdown ? (
-                    <div className="dropdown">
-                      <span className="dropdown-toggle">{link.name}</span>
+                    <div className={`dropdown ${uiState.activeDropdown === link.name ? 'open' : ''}`}>
+                      <button 
+                        className="dropdown-toggle" 
+                        onClick={() => handleDropdownToggle(link.name)}
+                        aria-expanded={uiState.activeDropdown === link.name}
+                      >
+                        {link.name}
+                        <FaChevronDown className="dropdown-icon" />
+                      </button>
                       <div className="dropdown-menu">
                         {link.items.map((group) => (
                           <div key={group.name} className="dropdown-group">
@@ -109,7 +124,6 @@ function Header() {
                               <NavLink
                                 key={item.path}
                                 to={item.path}
-                                // Updated to use the new v6 className syntax
                                 className={({ isActive }) =>
                                   `dropdown-item ${isActive ? "active-link" : ""}`
                                 }
@@ -125,7 +139,6 @@ function Header() {
                   ) : (
                     <NavLink
                       to={link.path}
-                      // Updated to use the new v6 className syntax
                       className={({ isActive }) =>
                         `nav-link ${isActive ? "active-link" : ""}`
                       }
@@ -139,27 +152,27 @@ function Header() {
             </ul>
           </nav>
         </div>
-
         <div className="header-right">
           <button
             className={`search-toggle ${uiState.isSearchVisible ? "active" : ""}`}
             onClick={() => toggleState("isSearchVisible")}
             aria-label="Toggle search"
           >
-            🔍
+            <FaSearch className="search-icon" />
           </button>
           <button
             className={`hamburger ${uiState.isMenuOpen ? "active" : ""}`}
             onClick={() => toggleState("isMenuOpen")}
             aria-label="Toggle menu"
           >
-            <span className="hamburger-line" />
-            <span className="hamburger-line" />
-            <span className="hamburger-line" />
+            {uiState.isMenuOpen ? (
+              <FaTimes className="close-icon" />
+            ) : (
+              <FaBars className="menu-icon" />
+            )}
           </button>
         </div>
       </div>
-
       <div className={`mobile-menu-container ${uiState.isMenuOpen ? "open" : ""}`}>
         <nav className="mobile-nav">
           <ul className="mobile-nav-list">
@@ -171,9 +184,12 @@ function Header() {
                       className={`mobile-dropdown-toggle ${
                         uiState.activeDropdown === link.name ? "active" : ""
                       }`}
-                      onClick={() => toggleState("activeDropdown", link.name)}
+                      onClick={() => handleDropdownToggle(link.name)}
                     >
                       {link.name}
+                      <FaChevronDown className={`mobile-dropdown-icon ${
+                        uiState.activeDropdown === link.name ? "rotate" : ""
+                      }`} />
                     </button>
                     <div
                       className={`mobile-dropdown-menu ${
@@ -187,7 +203,6 @@ function Header() {
                             <NavLink
                               key={item.path}
                               to={item.path}
-                              // Updated to use the new v6 className syntax
                               className={({ isActive }) =>
                                 `mobile-dropdown-item ${isActive ? "active-link" : ""}`
                               }
@@ -203,7 +218,6 @@ function Header() {
                 ) : (
                   <NavLink
                     to={link.path}
-                    // Updated to use the new v6 className syntax
                     className={({ isActive }) =>
                       `mobile-nav-link ${isActive ? "active-link" : ""}`
                     }
@@ -217,7 +231,6 @@ function Header() {
           </ul>
         </nav>
       </div>
-
       <div className={`search-bar-container ${uiState.isSearchVisible ? "open" : ""}`}>
         <form onSubmit={handleSearchSubmit} className="search-form">
           <label htmlFor="search-input" className="visually-hidden">
@@ -233,7 +246,7 @@ function Header() {
             aria-label="Search field"
           />
           <button type="submit" className="search-button">
-            Search
+            <FaSearch className="search-submit-icon" />
           </button>
         </form>
       </div>

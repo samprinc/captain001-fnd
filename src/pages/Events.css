@@ -1,22 +1,83 @@
 .events-container {
-  max-width: 800px;
-  margin: 0 auto;
-  padding: 20px;
+  padding: 3rem 1rem;
+  max-width: 1200px;
+  margin: auto;
+  font-family: "Segoe UI", sans-serif;
+  background: #f4f9ff;
 }
 
-.event-list {
-  list-style: none;
-  padding: 0;
+.events-heading {
+  text-align: center;
+  font-size: 2rem;
+  color: #013a63;
+  margin-bottom: 2rem;
 }
 
-.event-item {
-  border: 1px solid #ccc;
-  padding: 16px;
-  margin-bottom: 15px;
-  border-radius: 6px;
-  background-color: #f9f9f9;
+.no-events {
+  text-align: center;
+  font-style: italic;
+  color: #777;
 }
 
-.event-item h3 {
-  margin-bottom: 5px;
+/* Event Grid Layout */
+.event-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+}
+
+/* Event Card Design */
+.event-card {
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.3s ease;
+}
+
+.event-card:hover {
+  transform: scale(1.02);
+}
+
+/* Poster/Banner Image */
+.event-banner {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  border-bottom: 3px solid #00ffcc; /* Luminous accent */
+}
+
+/* Event Text Info */
+.event-details {
+  padding: 1.5rem;
+}
+
+.event-title {
+  color: #ff0033;
+  font-size: 1.4rem;
+  margin-bottom: 0.5rem;
+}
+
+.event-description {
+  color: #333;
+  margin-bottom: 1rem;
+}
+
+.event-meta {
+  color: #555;
+  font-weight: 500;
+  font-size: 0.95rem;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .events-container {
+    padding: 2rem 1rem;
+  }
+
+  .event-banner {
+    height: 180px;
+  }
 }

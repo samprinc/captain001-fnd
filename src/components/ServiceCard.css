@@ -3,48 +3,85 @@
 .service-card-link {
   text-decoration: none;
   color: inherit;
+  transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
   display: block;
+  border-radius: 12px; /* Ensures the link covers the entire card, including rounded corners */
+  overflow: hidden; /* Ensures child elements respect the border radius */
 }
 
 .service-card {
-  background-color: #ffffff;
+  background-color: #fff;
   border-radius: 12px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-  padding: 2rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
   display: flex;
   flex-direction: column;
-  align-items: center;
-  text-align: center;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
   height: 100%;
+  transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out; /* Smooth transition for card hover effects */
 }
 
 .service-card-link:hover .service-card {
-  transform: translateY(-10px);
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+  transform: translateY(-5px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15); /* Slightly increased shadow for a more pronounced hover effect */
 }
 
-.service-card-icon {
-  font-size: 4rem; /* Adjusted for Font Awesome icons */
-  color: #1a237e;
-  margin-bottom: 1rem;
+.service-card-image-container {
+  width: 100%;
+  height: 200px;
+  overflow: hidden;
+  border-top-left-radius: 12px;
+  border-top-right-radius: 12px;
 }
 
-.service-card-icon img {
-  width: 96px; /* A consistent, larger size for images */
-  height: 96px;
-  object-fit: contain;
+.service-card-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s ease; /* Slightly longer transition for a smoother zoom effect */
+}
+
+.service-card-link:hover .service-card-image {
+  transform: scale(1.05);
+}
+
+.service-card-content {
+  padding: 1.5rem;
+  text-align: left;
+  flex-grow: 1; /* Ensures the content takes up remaining space, pushing the footer to the bottom */
 }
 
 .service-card-title {
   font-size: 1.5rem;
-  font-weight: 600;
-  color: #333;
-  margin-bottom: 0.5rem;
+  font-weight: bold;
+  color: #1e293b;
+  margin-bottom: 0.75rem;
 }
 
 .service-card-description {
   font-size: 1rem;
-  color: #666;
-  line-height: 1.5;
+  color: #64748b;
+  line-height: 1.6;
+  margin-bottom: 1rem; /* Adds some space below the description */
+}
+
+/* Optional: Add a subtle border on the top of the content section for visual separation */
+.service-card-content {
+  border-top: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+/* Optional: Add a read more link or button */
+.service-card-read-more {
+  color: #3b82f6; /* Blue color for the link */
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.3s ease;
+}
+
+.service-card-read-more:hover {
+  color: #2563eb; /* Darker blue on hover */
+}
+
+.service-card-footer {
+  padding: 1rem;
+  margin-top: auto; /* Pushes the footer to the bottom of the card */
+  border-top: 1px solid rgba(0, 0, 0, 0.05); /* Optional: Adds a subtle border */
 }

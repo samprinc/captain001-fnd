@@ -12,7 +12,11 @@ function Services() {
   useEffect(() => {
     fetchServices()
       .then((res) => {
-        setServices(res.data.results);
+        if (res?.data?.results) {
+          setServices(res.data.results);
+        } else {
+          setError("No services found.");
+        }
         setLoading(false);
       })
       .catch((err) => {
@@ -30,10 +34,11 @@ function Services() {
       <header className="services-header">
         <h1>Our Professional Services</h1>
         <p className="services-intro">
-          We provide high-quality media and production services to help your brand shine.
-          From captivating visuals to strategic communication, we have you covered.
+          We provide high-quality media and production services to help your brand shine. From
+          captivating visuals to strategic communication, we have you covered.
         </p>
       </header>
+
       <div className="services-grid">
         {services.length > 0 ? (
           services.map((service) => (
@@ -42,7 +47,7 @@ function Services() {
               title={service.title}
               description={service.description}
               icon={service.icon}
-              to={`/book/${encodeURIComponent(service.title)}`} // This is the change
+              to={`/book`} // Direct booking
             />
           ))
         ) : (

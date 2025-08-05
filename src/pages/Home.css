@@ -1,4 +1,12 @@
 /* ==== Root Styling (from first file) ==== */
+html, body {
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden; /* 🔐 Prevent horizontal scroll */
+  width: 100%;
+  max-width: 100vw;
+}
+
 :root {
   --primary-color: #0055aa;
   --accent-color: #ff6600;
@@ -7,9 +15,10 @@
   --bg-light: #ffffff;
   --bg-soft: #f4f6fa;
   --gradient-hero: linear-gradient(to right, #00c6ff, #0072ff);
+  --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
- body {
+body {
   margin: 0;
   padding: 0;
   font-family: 'Segoe UI', sans-serif;
@@ -49,19 +58,28 @@
 .hero-section {
   background: var(--gradient-hero);
   color: var(--text-light);
-  padding: 2rem;
+  padding: 2.5rem;
   border-radius: 12px;
   display: grid;
   grid-template-columns: 2fr 1fr;
-  gap: 20px;
+  gap: 30px;
   margin-bottom: 2rem;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
 }
 
+.hero-content h1 {
+  font-size: 2.5rem;
+  font-weight: 800;
+  margin-bottom: 1rem;
+}
 
+.hero-content p {
+  font-size: 1.1rem;
+  line-height: 1.6;
+}
 
 .hero-trending {
-  background-color: #ffffff;
+  background-color: var(--bg-light);
   color: var(--text-dark);
   padding: 1.5rem;
   border-radius: 8px;
@@ -139,10 +157,10 @@
   position: fixed;
   bottom: 0;
   width: 100%;
-  background: white;
+  background: var(--white);
   box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.1);
   z-index: 9999;
-  display: flex;
+  display: none; /* Hidden by default on large screens */
   justify-content: center;
   align-items: center;
   padding: 0.5rem;
@@ -167,23 +185,23 @@
 .partner-marquee {
   margin-top: 4rem;
   padding: 1rem 0;
-  background: #fff;
+  background: var(--bg-light);
   border-top: 1px solid #ddd;
 }
 
 /* --- Cards and Forms --- */
-.newsletter-card {
+.newsletter-card, .popular-posts {
   background-color: var(--bg-light);
   padding: 1.5rem;
   border-radius: 8px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+  box-shadow: var(--shadow-sm);
 }
 
-.newsletter-card h3 {
+.newsletter-card h3, .popular-posts h3 {
   margin-top: 0;
   color: var(--primary-color);
   font-size: 1.4rem;
-  margin-bottom: 5px;
+  margin-bottom: 10px;
 }
 
 .newsletter-card p {
@@ -192,45 +210,65 @@
   margin-bottom: 20px;
 }
 
-.popular-posts {
-  background-color: var(--bg-light);
-  border-radius: 8px;
-  padding: 1.5rem;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
-}
 
-.popular-posts h3 {
-  color: var(--primary-color);
-  font-size: 1.4rem;
-  margin-bottom: 10px;
-}
+/*
+====================================
+ Responsive Adjustments
+====================================
+*/
 
-/* ==== Responsive Adjustments ==== */
+/* Tablet Layout */
 @media (max-width: 992px) {
   .hero-section, .main-content-grid {
     grid-template-columns: 1fr;
   }
-
   .sidebar {
     order: -1; /* Puts the sidebar at the top on smaller screens */
   }
+  .hero-trending {
+    margin-top: 1.5rem;
+  }
 }
 
+/* Mobile Layout */
 @media (max-width: 768px) {
   .home-container {
-    padding: 1rem;
+    padding: 1rem 0.75rem;
   }
   
   .hero-section {
     padding: 1.5rem;
     gap: 1rem;
+    flex-direction: column; /* Stacks hero content */
   }
 
   .hero-trending {
     padding: 1rem;
+    margin-top: 1rem; /* Adjusts spacing on mobile */
+  }
+  
+  .hero-content h1 {
+    font-size: 2rem;
+  }
+  
+  .hero-content p {
+    font-size: 1rem;
   }
 
   .section-title {
     font-size: 1.5rem;
+  }
+  
+  .main-content-grid {
+    gap: 20px;
+  }
+  
+  .news-feed-grid {
+    gap: 15px;
+  }
+
+  /* Explicitly show the mobile ad */
+  .mobile-sticky-ad {
+    display: flex;
   }
 }

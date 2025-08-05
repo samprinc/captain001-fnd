@@ -6,31 +6,42 @@ function Events() {
   const [events, setEvents] = useState([]);
 
   useEffect(() => {
-  fetchEvents()
-    .then((res) => {
-      console.log("Events response:", res.data); // <-- Add this line
-      setEvents(res.data.results);
-    })
-    .catch((err) => console.error("Failed to fetch events", err));
-}, []);
-
+    fetchEvents()
+      .then((res) => {
+        console.log("Events response:", res.data);
+        setEvents(res.data.results);
+      })
+      .catch((err) => console.error("Failed to fetch events", err));
+  }, []);
 
   return (
     <div className="events-container">
-      <h2>Upcoming Events</h2>
+      <h2 className="events-heading">🎉 Upcoming Events</h2>
       {events.length === 0 ? (
-        <p>No events available at the moment.</p>
+        <p className="no-events">No events available at the moment.</p>
       ) : (
-        <ul className="event-list">
+        <div className="event-grid">
           {events.map((event) => (
-            <li key={event.id} className="event-item">
-              <h3>{event.title}</h3>
-              <p>{event.description}</p>
-              <p><strong>📅 {new Date(event.date).toLocaleString()}</strong></p>
-              <p>📍 {event.location}</p>
-            </li>
+            <div key={event.id} className="event-card">
+              {event.image && (
+                <img
+                  src={event.image}
+                  alt={event.title}
+                  className="event-banner"
+                />
+              )}
+              <div className="event-details">
+                <h3 className="event-title">{event.title}</h3>
+                <p className="event-description">{event.description}</p>
+                <p className="event-meta">
+                  <strong>📅</strong>{" "}
+                  {new Date(event.date).toLocaleDateString()} &nbsp;|&nbsp;
+                  <strong>📍</strong> {event.location}
+                </p>
+              </div>
+            </div>
           ))}
-        </ul>
+        </div>
       )}
     </div>
   );
