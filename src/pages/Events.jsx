@@ -6,10 +6,14 @@ function Events() {
   const [events, setEvents] = useState([]);
 
   useEffect(() => {
-    fetchEvents()
-      .then((res) => setEvents(res.data))
-      .catch((err) => console.error("Failed to fetch events", err));
-  }, []);
+  fetchEvents()
+    .then((res) => {
+      console.log("Events response:", res.data); // <-- Add this line
+      setEvents(res.data.results);
+    })
+    .catch((err) => console.error("Failed to fetch events", err));
+}, []);
+
 
   return (
     <div className="events-container">

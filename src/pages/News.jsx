@@ -182,7 +182,8 @@ function Posts() {
         <div className="posts-grid">
           {posts.map((post) => (
             // Pass the entire post object for cleaner code
-            <NewsCard key={post.id} post={post} />
+            <NewsCard key={`${post.id}-${post.title}`} post={post} />
+
           ))}
         </div>
       )}

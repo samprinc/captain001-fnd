@@ -3,7 +3,7 @@
 :root {
   --primary-color: #00aaff; /* A bright, luminous sky blue */
   --text-color: #333333; /* A soft, dark gray for readability */
-  --background-color: #ffffff;
+  --background-color: #faf8f8;
   --scrolled-background: rgba(255, 255, 255, 0.95);
   --border-color: #e0e0e0;
   --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;

@@ -21,8 +21,7 @@ import Partners from "./pages/Partners";
 import Author from "./pages/Authors";
 import CategoriesPage from "./pages/CategoriesPage";
 import NotFound from "./pages/NotFound";
-// import AboutUs from "./pages/AboutUs"; // <-- Add this when you create the page
-
+import AboutUs from "./pages/AboutUs"; 
 import "./styles/styles.css";
 
 function App() {
@@ -44,7 +43,7 @@ function App() {
             <Route path="/book" element={<Book />} />
             <Route path="/feedback" element={<Feedback />} />
             <Route path="/contact" element={<Contact />} />
-            {/* <Route path="/about" element={<AboutUs />} /> */}
+            <Route path="/about" element={<AboutUs />} /> 
             <Route path="*" element={<NotFound />} />
           </Routes>
         </main>

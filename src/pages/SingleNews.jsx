@@ -39,6 +39,18 @@ function SingleNews() {
     loadPost();
   }, [id]);
 
+  // Update post ID in form data when ID changes
+  useEffect(() => {
+    setFormData((prev) => ({ ...prev, post: id }));
+  }, [id]);
+
+  useEffect(() => {
+    if (submissionState === "success") {
+      const timer = setTimeout(() => setSubmissionState("idle"), 4000);
+      return () => clearTimeout(timer);
+    }
+  }, [submissionState]);
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
@@ -73,14 +85,15 @@ function SingleNews() {
       setSubmissionState("success");
       setFormData({ name: "", email: "", content: "", post: id });
 
-      // Add the new comment to the list directly, no approval status needed
-      setComments((prev) => [...prev, newComment.data || {
-        id: Date.now(), // Fallback to a temporary ID
-        name: formData.name,
-        content: formData.content,
-        createdAt: new Date().toISOString()
-      }]);
-
+      setComments((prev) => [
+        ...prev,
+        newComment.data || {
+          id: Date.now(),
+          name: formData.name,
+          content: formData.content,
+          createdAt: new Date().toISOString(),
+        },
+      ]);
     } catch (err) {
       console.error("Failed to submit comment:", err);
       setSubmissionState("error");
@@ -93,7 +106,9 @@ function SingleNews() {
 
   const imageUrl = post.image?.startsWith("http")
     ? post.image
-    : `https://res.cloudinary.com/dco3yxmss/${post.image}`;
+    : post.image
+    ? `https://res.cloudinary.com/dco3yxmss/${post.image}`
+    : "";
 
   return (
     <article className="single-post-container">
@@ -134,9 +149,7 @@ function SingleNews() {
       />
 
       <section className="comments-section">
-        <h2 className="section-title">
-          Comments ({comments.length})
-        </h2>
+        <h2 className="section-title">Comments ({comments.length})</h2>
 
         {comments.length === 0 ? (
           <p className="no-comments">Be the first to comment!</p>
@@ -148,7 +161,6 @@ function SingleNews() {
                 name={comment.name}
                 content={comment.content}
                 date={comment.createdAt}
-                // No 'approved' prop is passed to CommentBox anymore
               />
             ))}
           </div>

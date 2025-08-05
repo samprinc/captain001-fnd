@@ -1,0 +1,99 @@
+/* Base styles */
+.about-page {
+  padding: 3rem 1.5rem;
+  max-width: 1100px;
+  margin: 0 auto;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  color: #222;
+  line-height: 1.7;
+  background-color: #f9fbff;
+}
+
+h1, h2 {
+  color: #013a63; /* Sky Blue */
+  margin-bottom: 1rem;
+}
+
+h2 {
+  border-left: 5px solid #ff0033;
+  padding-left: 0.75rem;
+  margin-top: 2.5rem;
+}
+
+.highlight {
+  color: #ff0033; /* Red Accent */
+}
+
+/* Sections */
+.company-intro, .ceo-profile, .skills, .contacts, .cta-section {
+  background: #ffffff;
+  border-radius: 8px;
+  padding: 2rem;
+  margin-bottom: 2rem;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
+}
+
+/* CEO Image */
+.ceo-image {
+  width: 100%;
+  max-width: 280px;
+  border-radius: 12px;
+  margin: 1rem 0;
+  border: 3px solid #00ffcc; /* luminous border */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Skills list */
+.skills ul {
+  list-style: disc;
+  padding-left: 1.8rem;
+  margin-top: 1rem;
+}
+
+.skills li {
+  margin-bottom: 0.5rem;
+}
+
+/* Contact Links */
+.contacts a {
+  color: #013a63;
+  font-weight: 500;
+  text-decoration: none;
+  transition: color 0.2s ease-in-out;
+}
+
+.contacts a:hover {
+  color: #ff0033;
+  text-decoration: underline;
+}
+
+/* CTA Section */
+.cta-section {
+  background-color: #e3f8ff;
+  border-left: 5px solid #00ffcc; /* luminous line */
+  padding: 2rem;
+  border-radius: 8px;
+  text-align: center;
+  box-shadow: 0 2px 14px rgba(0, 0, 0, 0.08);
+}
+
+.cta-section h2 {
+  font-size: 1.8rem;
+  margin-bottom: 1rem;
+}
+
+.cta-section em {
+  font-style: italic;
+  color: #555;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .about-page {
+    padding: 1.5rem 1rem;
+  }
+
+  .ceo-image {
+    max-width: 100%;
+  }
+}

@@ -1,21 +1,21 @@
 // src/components/BookingForm.jsx
 import { useState, useEffect } from "react";
-import { useParams } from "react-router-dom"; // Import useParams to read URL parameters
+import { useParams } from "react-router-dom";
 import { fetchServices, submitBooking } from "../api/api";
 import Spinner from "./Spinner";
 import "./BookingForm.css";
 
 function BookingForm() {
-  // Use a URL parameter to get the service title
   const { serviceTitle } = useParams();
 
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     phone: "",
-    service: serviceTitle ? decodeURIComponent(serviceTitle) : "", // Pre-fill service if available
+    service: "", // Will be set to service ID
     message: "",
   });
+
   const [services, setServices] = useState([]);
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -25,20 +25,22 @@ function BookingForm() {
   useEffect(() => {
     fetchServices()
       .then((res) => {
-        if (Array.isArray(res.data.results)) {
-          setServices(res.data.results);
-        } else {
-          console.error("API response is not an array:", res.data);
-          setServices([]);
+        const data = Array.isArray(res.data.results) ? res.data.results : [];
+        setServices(data);
+
+        if (serviceTitle) {
+          const decoded = decodeURIComponent(serviceTitle).toLowerCase();
+          const match = data.find((s) => s.title.toLowerCase() === decoded);
+          if (match) {
+            setFormData((prev) => ({ ...prev, service: match.id }));
+          }
         }
       })
       .catch((err) => {
         console.error("Failed to fetch services:", err);
       })
-      .finally(() => {
-        setLoading(false);
-      });
-  }, []);
+      .finally(() => setLoading(false));
+  }, [serviceTitle]);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -50,6 +52,7 @@ function BookingForm() {
     setSubmissionError("");
 
     try {
+      console.log("Submitting booking:", formData); // ✅ Debug
       await submitBooking(formData);
       setSubmitted(true);
       setFormData({ name: "", email: "", phone: "", service: "", message: "" });
@@ -68,9 +71,7 @@ function BookingForm() {
       <div className="booking-form-card">
         <header className="booking-form-header">
           <h2>Book a Service</h2>
-          <p>
-            Tell us about your project and we'll get back to you with a personalized quote.
-          </p>
+          <p>Tell us about your project and we'll get back to you with a personalized quote.</p>
         </header>
 
         {submitted && <p className="success-msg">Booking submitted successfully! We'll be in touch soon.</p>}
@@ -97,7 +98,7 @@ function BookingForm() {
             <select id="service" name="service" required value={formData.service} onChange={handleChange}>
               <option value="">-- Select a Service --</option>
               {services.map((s) => (
-                <option key={s.id} value={s.title}>
+                <option key={s.id} value={s.id}>
                   {s.title}
                 </option>
               ))}
@@ -106,7 +107,14 @@ function BookingForm() {
 
           <div className="form-group">
             <label htmlFor="message">Project Details</label>
-            <textarea id="message" name="message" rows="4" placeholder="Briefly describe your project..." value={formData.message} onChange={handleChange}></textarea>
+            <textarea
+              id="message"
+              name="message"
+              rows="4"
+              placeholder="Briefly describe your project..."
+              value={formData.message}
+              onChange={handleChange}
+            ></textarea>
           </div>
 
           <button type="submit" className="submit-btn" disabled={submissionLoading}>

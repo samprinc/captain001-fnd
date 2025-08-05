@@ -59,18 +59,21 @@ function Home() {
     fetchData();
   }, []);
 
-  // --- 📰 Content Slicing & Filtering Logic ---
-  const featuredPost = data.news[0] || null;
+// ... (rest of the code)
 
-  // The next 5 articles (from index 1 to 5) are for the trending section.
-  const trendingPosts = data.news
-    .slice(1, 6)
-    .sort((a, b) => b.views - a.views);
+ // --- 📰 More Flexible Slicing Logic ---
+   const newsPosts = data.news || [];
+   const featuredPost = newsPosts[0] || null;
 
-  // All remaining articles (from index 6 onwards) are for the latest news.
-  const latestNews = data.news.slice(6);
+  // Use up to 3 posts for trending.
+     const trendingPosts = newsPosts
+      .slice(1, 4) // Indices 1, 2, 3
+     .sort((a, b) => b.views - a.views);
 
-  // --- 🖼️ UI Rendering ---
+ // The remaining posts, from index 4 onwards, are the latest news.
+     const latestNews = newsPosts.slice(4);
+
+  // ... (rest of the code)
   if (loading) {
     return (
       <div className="loading-state">
@@ -105,7 +108,8 @@ function Home() {
           {latestNews.length > 0 ? (
             <div className="news-feed-grid">
               {latestNews.map((post) => (
-                <NewsCard key={post.id} post={post} />
+                <NewsCard key={`${post.id}-${post.slug || post.title}`} post={post} />
+
               ))}
             </div>
           ) : (
