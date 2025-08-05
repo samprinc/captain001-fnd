@@ -7,6 +7,8 @@
   --bg-light: #ffffff;
   --bg-soft: #f4f6fa;
   --gradient-hero: linear-gradient(to right, #00c6ff, #0072ff);
+}
+
  body {
   margin: 0;
   padding: 0;
