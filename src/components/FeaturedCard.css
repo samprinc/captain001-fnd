@@ -1,16 +1,14 @@
-/* FeaturedCard.css */
-
 .featured-card {
   position: relative;
   overflow: hidden;
   border-radius: 12px;
   background: #000;
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
   transition: transform 0.3s ease;
 }
 
 .featured-card:hover {
-  transform: translateY(-5px);
+  transform: translateY(-4px);
 }
 
 .featured-link {
@@ -40,47 +38,54 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background: linear-gradient(to top, rgba(0, 0, 0, 0.7), transparent);
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.65), transparent);
 }
 
 .featured-content {
   position: absolute;
   bottom: 0;
   padding: 1.5rem;
-  color: white;
+  color: #f1f1f1;
   z-index: 2;
   width: 100%;
 }
 
 .featured-badge {
-  background-color: var(--primary-color);
-  padding: 0.3rem 0.8rem;
-  font-size: 0.75rem;
+  background-color: #777; /* Neutral gray instead of blue */
+  color: #fff;
+  padding: 0.35rem 0.8rem;
+  font-size: 0.7rem;
   text-transform: uppercase;
-  font-weight: bold;
-  border-radius: 6px;
+  font-weight: 600;
+  border-radius: 5px;
   display: inline-block;
   margin-bottom: 0.6rem;
 }
 
 .featured-title {
-  font-size: 1.8rem;
+  font-size: 1.75rem;
   font-weight: bold;
   margin-bottom: 0.8rem;
+  color: #f9f9f9;
 }
 
 .featured-excerpt {
   font-size: 1rem;
-  line-height: 1.5;
-  color: #e0e0e0;
+  line-height: 1.6;
+  color: #cccccc;
   margin-bottom: 1rem;
 }
 
 .featured-read-more {
   font-size: 0.9rem;
-  color: #ffd;
+  color: #f0e68c; /* warm yellow instead of bright blue */
   text-decoration: underline;
   font-weight: 500;
+  transition: color 0.2s ease;
+}
+
+.featured-read-more:hover {
+  color: #fff;
 }
 
 @media (max-width: 768px) {
@@ -89,7 +94,7 @@
   }
 
   .featured-title {
-    font-size: 1.3rem;
+    font-size: 1.4rem;
   }
 
   .featured-excerpt {

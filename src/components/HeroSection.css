@@ -1,0 +1,89 @@
+/* src/components/HeroSection.css */
+
+.hero-marketing {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 85vh;
+  padding: 4rem 2rem;
+  background: linear-gradient(135deg, #0f172a, #1e293b); /* deep navy to slate blue */
+  color: #f1f5f9;
+  text-align: center;
+  border-radius: 0 0 16px 16px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.hero-content {
+  max-width: 800px;
+  z-index: 1;
+}
+
+.hero-marketing h1 {
+  font-size: 2.8rem;
+  margin-bottom: 1rem;
+  font-weight: 800;
+  line-height: 1.2;
+  color: #ffffff;
+}
+
+.hero-marketing p {
+  font-size: 1.25rem;
+  margin-bottom: 2rem;
+  font-weight: 400;
+  color: #cbd5e1;
+}
+
+.hero-buttons {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.hero-btn {
+  padding: 0.75rem 2rem;
+  font-size: 1rem;
+  border: none;
+  border-radius: 6px;
+  text-decoration: none;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.hero-btn.primary {
+  background-color: #3b82f6; /* blue-500 */
+  color: #fff;
+}
+
+.hero-btn.primary:hover {
+  background-color: #2563eb; /* blue-600 */
+}
+
+.hero-btn.secondary {
+  background-color: transparent;
+  border: 2px solid #94a3b8; /* slate-400 */
+  color: #f1f5f9;
+}
+
+.hero-btn.secondary:hover {
+  background-color: #f1f5f9;
+  color: #0f172a;
+}
+
+/* Responsive for mobile */
+@media (max-width: 768px) {
+  .hero-marketing h1 {
+    font-size: 2rem;
+  }
+
+  .hero-marketing p {
+    font-size: 1rem;
+  }
+
+  .hero-btn {
+    width: 100%;
+    text-align: center;
+  }
+}

@@ -1,4 +1,3 @@
-// src/components/NewsCard.jsx
 import { Link } from "react-router-dom";
 import { formatImage } from "../utils/formatImage";
 import { formatTimeAgo } from "../utils/dateFormatter";
@@ -23,7 +22,6 @@ function NewsCard({ post, layout = "horizontal" }) {
         <h3 className="news-title">
           <Link to={`/news/${post.id}`}>{post.title}</Link>
         </h3>
-        {/* Updated line to include the icon */}
         {timeAgo && (
           <span className="post-meta">
             <i className="fas fa-clock"></i>

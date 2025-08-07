@@ -1,47 +1,70 @@
-/* src/components/Header.css */
+/*
+  * ======================================
+  * IMPROVED HEADER STYLES
+  * ======================================
+  */
 
+/*
+  * ======================================
+  * 1. CSS Custom Properties (Variables)
+  * ======================================
+  */
 :root {
-  --primary-color: #2563eb;       /* Vibrant blue */
-  --primary-hover: #1d4ed8;       /* Darker blue for hover states */
-  --secondary-color: #f59e0b;     /* Amber for accents */
-  --dark-color: #1e293b;          /* Dark slate for text */
-  --light-color: #f8fafc;         /* Lightest gray for backgrounds */
-  --text-color: #334155;          /* Main text color */
-  --text-light: #64748b;          /* Secondary text color */
+  --primary-color: #2563eb;         /* Vibrant blue */
+  --primary-hover: #1d4ed8;         /* Darker blue for hover states */
+  --secondary-color: #f59e0b;       /* Amber for accents */
+  --dark-color: #1e293b;            /* Dark slate for text */
+  --light-color: #f8fafc;           /* Lightest gray for backgrounds */
+  --text-color: #334155;            /* Main text color */
+  --text-light: #64748b;            /* Secondary text color */
   --white: #ffffff;
+  
   --transition-fast: all 0.2s ease-in-out;
   --transition-slow: all 0.4s ease-in-out;
-  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
-  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
-  --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
+  
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.08); /* Adjusted shadow for subtlety */
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.1); /* Adjusted shadow for more depth */
+  --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.15); /* More pronounced shadow */
+  
   --radius-md: 0.5rem;
-  --height: 80px; /* Header height */
+  --height: 80px; /* Default header height */
+  --height-scrolled: 64px; /* Header height when scrolled */
 }
 
-/* Base Styles */
+/*
+  * ======================================
+  * 2. Base Styles
+  * ======================================
+  */
 body {
   margin: 0;
-  font-family: "Segoe UI", sans-serif;
-  line-height: 1.5;
+  font-family: 'Inter', sans-serif; /* Switched to a more modern font */
+  line-height: 1.6;
   color: var(--text-color);
+  background-color: var(--light-color);
 }
 
+/* Sticky Header Base Style */
 .header {
-  position: sticky;
+  position: fixed;
   top: 0;
   left: 0;
   right: 0;
-  z-index: 1000;
+  z-index: 999;
   background-color: var(--white);
   box-shadow: var(--shadow-sm);
-  transition: var(--transition-fast);
+  transition: top 0.3s ease;
   height: var(--height);
 }
 
-.header.scrolled {
-  box-shadow: var(--shadow-md);
-  background-color: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(8px);
+/* When hidden during scroll down */
+.header.hide-on-scroll {
+  top: -100px; /* or -var(--height) */
+}
+
+/* When scrolled up, show header again */
+.header.show-on-scroll {
+  top: 0;
 }
 
 .header-container {
@@ -51,9 +74,14 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  height: var(--height);
+  height: 100%; /* Use 100% to fill the header's height */
 }
 
+/*
+  * ======================================
+  * 3. Header Left Section
+  * ======================================
+  */
 .header-left {
   display: flex;
   align-items: center;
@@ -63,7 +91,7 @@ body {
 .logo-link {
   display: flex;
   align-items: center;
-  transition: var(--transition-fast);
+  transition: transform 0.3s ease;
 }
 
 .logo-link:hover {
@@ -72,14 +100,18 @@ body {
 
 .logo-image {
   height: 2.5rem;
-  transition: var(--transition-fast);
+  transition: height 0.3s ease;
 }
 
 .header.scrolled .logo-image {
   height: 2rem;
 }
 
-/* Main Navigation (Desktop) */
+/*
+  * ======================================
+  * 4. Main Navigation (Desktop)
+  * ======================================
+  */
 .main-nav {
   display: flex;
   align-items: center;
@@ -87,7 +119,7 @@ body {
 
 .nav-list {
   display: flex;
-  gap: 1.5rem;
+  gap: 2rem; /* Increased gap for better spacing */
   list-style: none;
   margin: 0;
   padding: 0;
@@ -106,7 +138,7 @@ body {
   transition: var(--transition-fast);
   display: flex;
   align-items: center;
-  gap: 0.25rem;
+  gap: 0.5rem;
   background: none;
   border: none;
   cursor: pointer;
@@ -138,7 +170,7 @@ body {
   position: absolute;
   top: calc(var(--height) - 1rem);
   left: 50%;
-  transform: translateX(-50%);
+  transform: translateX(-50%) translateY(20px);
   background-color: var(--white);
   border-radius: var(--radius-md);
   box-shadow: var(--shadow-lg);
@@ -146,7 +178,7 @@ body {
   min-width: 240px;
   opacity: 0;
   visibility: hidden;
-  transition: var(--transition-fast);
+  transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s;
   z-index: 100;
   display: flex;
   gap: 1.5rem;
@@ -155,7 +187,7 @@ body {
 .nav-item:hover .dropdown-menu {
   opacity: 1;
   visibility: visible;
-  top: var(--height); /* Animates dropdown from top */
+  transform: translateX(-50%) translateY(0); /* Smoother fade-in animation */
 }
 
 .dropdown-group {
@@ -182,7 +214,7 @@ body {
 
 .dropdown-item:hover {
   color: var(--primary-color);
-  padding-left: 0.25rem;
+  transform: translateX(4px); /* subtle slide on hover */
 }
 
 .dropdown-item.active-link {
@@ -190,7 +222,11 @@ body {
   font-weight: 500;
 }
 
-/* Right side of Header */
+/*
+  * ======================================
+  * 5. Header Right Section & Search
+  * ======================================
+  */
 .header-right {
   display: flex;
   align-items: center;
@@ -233,7 +269,7 @@ body {
   transform: translateY(-100%);
   opacity: 0;
   visibility: hidden;
-  transition: var(--transition-fast);
+  transition: transform 0.3s ease-out, opacity 0.3s ease;
   z-index: 99;
 }
 
@@ -282,7 +318,11 @@ body {
   padding: 0.5rem;
 }
 
-/* Mobile-Specific Styles */
+/*
+  * ======================================
+  * 6. Mobile & Tablet Specific Styles
+  * ======================================
+  */
 .hamburger {
   display: none; /* Hidden on desktop */
 }
@@ -291,7 +331,6 @@ body {
   display: none;
 }
 
-/* Media Query for Mobile and Tablet */
 @media (max-width: 768px) {
   .main-nav {
     display: none;
@@ -442,7 +481,11 @@ body {
   }
 }
 
-/* Utility Class */
+/*
+  * ======================================
+  * 7. Utility Class
+  * ======================================
+  */
 .visually-hidden {
   position: absolute;
   width: 1px;
@@ -453,4 +496,34 @@ body {
   clip: rect(0, 0, 0, 0);
   white-space: nowrap;
   border-width: 0;
+}
+
+.mobile-center-title{
+  display: none;
+}
+
+
+@media (max-width: 768px) {
+  .main-header {
+    position: relative;
+    justify-content: space-between;
+  }
+
+  .mobile-center-title {
+    display: block;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-weight: bold;
+    font-size: 1.1rem;
+    color: var(--dark-color);
+    white-space: nowrap;
+    pointer-events: none;
+  }
+
+  .logo-link img {
+    width: 40px;
+    height: auto;
+  }
 }

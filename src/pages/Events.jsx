@@ -4,22 +4,36 @@ import "./Events.css";
 
 function Events() {
   const [events, setEvents] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
   useEffect(() => {
     fetchEvents()
       .then((res) => {
-        console.log("Events response:", res.data);
-        setEvents(res.data.results);
+        const results = res?.data?.results || [];
+        setEvents(results);
+        if (results.length === 0) {
+          setError("No events available at the moment.");
+        }
       })
-      .catch((err) => console.error("Failed to fetch events", err));
+      .catch((err) => {
+        console.error("Failed to fetch events", err);
+        setError("Failed to load events. Please try again later.");
+      })
+      .finally(() => {
+        setLoading(false);
+      });
   }, []);
 
   return (
     <div className="events-container">
       <h2 className="events-heading">🎉 Upcoming Events</h2>
-      {events.length === 0 ? (
-        <p className="no-events">No events available at the moment.</p>
-      ) : (
+
+      {loading && <p className="loading-message">Loading events...</p>}
+
+      {!loading && error && <p className="error-message">{error}</p>}
+
+      {!loading && !error && events.length > 0 && (
         <div className="event-grid">
           {events.map((event) => (
             <div key={event.id} className="event-card">

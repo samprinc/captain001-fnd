@@ -35,7 +35,7 @@ function App() {
             <Route path="/services" element={<Services />} />
             <Route path="/news" element={<News />} />
             <Route path="/news/:id" element={<SingleNews />} />
-            <Route path="/author/:id" element={<Author />} />
+            <Route path="/author" element={<Author />} />
             <Route path="/categories" element={<CategoriesPage />} />
             <Route path="/events" element={<Events />} />
             <Route path="/ads" element={<Ads />} />

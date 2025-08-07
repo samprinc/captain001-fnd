@@ -4,7 +4,7 @@ const CLOUDINARY_BASE = "https://res.cloudinary.com/dco3yxmss/";
 
 
 function PartnerMarquee({ partners = [] }) {
-  const scrollingPartners = [...partners, ...partners];
+const scrollingPartners = partners;
 
   return (
     <section className="partner-marquee">

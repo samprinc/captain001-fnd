@@ -40,15 +40,24 @@ function Header() {
   };
 
   useEffect(() => {
-    const handleScroll = () => {
-      setUiState((prevState) => ({
-        ...prevState,
-        isScrolled: window.scrollY > 50,
-      }));
-    };
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+  let lastScrollTop = window.scrollY || 0;
+
+  const handleScroll = () => {
+    const currentScrollTop = window.scrollY || 0;
+    const isScrollingDown = currentScrollTop > lastScrollTop;
+
+    setUiState(prev => ({
+      ...prev,
+      isScrolled: currentScrollTop > 50,
+      isHidden: isScrollingDown && currentScrollTop > 50,
+    }));
+
+    lastScrollTop = currentScrollTop <= 0 ? 0 : currentScrollTop;
+  };
+
+  window.addEventListener("scroll", handleScroll);
+  return () => window.removeEventListener("scroll", handleScroll);
+}, []);
 
   const menuLinks = [
     { name: "Home", path: "/" },
@@ -96,12 +105,20 @@ function Header() {
   };
 
   return (
-    <header className={`header ${uiState.isScrolled ? "scrolled" : ""}`}>
+    <header className={`header ${uiState.isScrolled ? "scrolled" : ""} ${uiState.isHidden ? "hide-on-scroll" : ""}`}>
+
       <div className="header-container">
         <div className="header-left">
           <Link to="/" className="logo-link" onClick={handleLinkClick}>
             <img src="/logo.svg" alt="Captain001" className="logo-image" />
           </Link>
+
+          {/* Mobile Title */}
+          <div className="mobile-title">
+            <strong>Captain 001 Media</strong>
+          </div>
+
+
           <nav className="main-nav">
             <ul className="nav-list">
               {menuLinks.map((link) => (

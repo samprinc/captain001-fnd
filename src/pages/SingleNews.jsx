@@ -3,14 +3,17 @@ import { useParams } from "react-router-dom";
 import { fetchPost, submitComment } from "../api/api";
 import CommentBox from "../components/CommentBox";
 import Spinner from "../components/Spinner";
+
 import "./SingleNews.css";
 
 function SingleNews() {
   const { id } = useParams();
+
   const [post, setPost] = useState(null);
   const [comments, setComments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -18,16 +21,22 @@ function SingleNews() {
     post: id,
   });
   const [formErrors, setFormErrors] = useState({});
-  const [submissionState, setSubmissionState] = useState("idle"); // 'idle', 'submitting', 'success', 'error'
+  const [submissionState, setSubmissionState] = useState("idle"); // 'idle' | 'submitting' | 'success' | 'error'
 
+  // Load post and comments
   useEffect(() => {
     const loadPost = async () => {
+      setLoading(true);
       try {
-        setLoading(true);
-        const response = await fetchPost(id);
-        setPost(response.data);
-        setComments(Array.isArray(response.data.comments) ? response.data.comments : []);
-        setError(null);
+        const res = await fetchPost(id);
+        const post = res?.data;
+
+        if (post) {
+          setPost(post);
+          setComments(Array.isArray(post.comments) ? post.comments : []);
+        } else {
+          setError("Post not found.");
+        }
       } catch (err) {
         console.error("Error fetching post:", err);
         setError("Failed to load post. Please try again later.");
@@ -39,11 +48,12 @@ function SingleNews() {
     loadPost();
   }, [id]);
 
-  // Update post ID in form data when ID changes
+  // Keep `post` ID synced in form
   useEffect(() => {
     setFormData((prev) => ({ ...prev, post: id }));
   }, [id]);
 
+  // Auto-reset submission success state
   useEffect(() => {
     if (submissionState === "success") {
       const timer = setTimeout(() => setSubmissionState("idle"), 4000);
@@ -51,9 +61,12 @@ function SingleNews() {
     }
   }, [submissionState]);
 
+  // Form handling
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
+
+    // Clear errors as user types
     if (formErrors[name]) {
       setFormErrors((prev) => ({ ...prev, [name]: "" }));
     }
@@ -65,7 +78,7 @@ function SingleNews() {
     if (!formData.email.trim()) {
       errors.email = "Email is required";
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-      errors.email = "Please enter a valid email address";
+      errors.email = "Please enter a valid email";
     }
     if (!formData.content.trim()) errors.content = "Comment cannot be empty";
     return errors;
@@ -74,6 +87,7 @@ function SingleNews() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const validationErrors = validateForm();
+
     if (Object.keys(validationErrors).length > 0) {
       setFormErrors(validationErrors);
       return;
@@ -83,6 +97,7 @@ function SingleNews() {
       setSubmissionState("submitting");
       const newComment = await submitComment(formData);
       setSubmissionState("success");
+
       setFormData({ name: "", email: "", content: "", post: id });
 
       setComments((prev) => [
@@ -95,27 +110,48 @@ function SingleNews() {
         },
       ]);
     } catch (err) {
-      console.error("Failed to submit comment:", err);
+      console.error("Comment submission failed:", err);
       setSubmissionState("error");
     }
   };
 
-  if (loading) return <Spinner />;
-  if (error) return <p className="error-message">{error}</p>;
-  if (!post) return <p className="not-found-message">Post not found.</p>;
-
-  const imageUrl = post.image?.startsWith("http")
+  // Image logic
+  const imageUrl = post?.image?.startsWith("http")
     ? post.image
-    : post.image
+    : post?.image
     ? `https://res.cloudinary.com/dco3yxmss/${post.image}`
     : "";
+
+  // UI Rendering
+ if (loading) return <SkeletonPost />;
+  if (error) return <p className="error-message">{error}</p>;
+  if (!post) return <p className="not-found-message">Post not found.</p>;
+   function SkeletonPost() {
+  return (
+    <article className="single-post-container skeleton">
+      <header className="post-header">
+        <div className="skeleton-title shimmer"></div>
+        <div className="skeleton-meta shimmer"></div>
+      </header>
+
+      <div className="post-image-container">
+        <div className="skeleton-image shimmer"></div>
+      </div>
+
+      <div className="skeleton-content shimmer"></div>
+      <div className="skeleton-content short shimmer"></div>
+    </article>
+  );
+}
 
   return (
     <article className="single-post-container">
       <header className="post-header">
         <h1 className="post-title">{post.title}</h1>
         <div className="post-meta">
-          <span className="post-author">By {post.author?.name || "Unknown Author"}</span>
+          <span className="post-author">
+            By {post.author?.name || "Unknown Author"}
+          </span>
           <span className="post-date">
             {new Date(post.publish_at).toLocaleDateString("en-US", {
               year: "numeric",
@@ -123,20 +159,15 @@ function SingleNews() {
               day: "numeric",
             })}
           </span>
-          {post.category && (
+          {post.category?.name && (
             <span className="post-category">{post.category.name}</span>
           )}
         </div>
       </header>
 
-      {post.image && (
+      {imageUrl && (
         <figure className="post-image-container">
-          <img
-            src={imageUrl}
-            alt={post.title}
-            className="post-image"
-            loading="lazy"
-          />
+          <img src={imageUrl} alt={post.title} className="post-image" loading="lazy" />
           {post.image_caption && (
             <figcaption className="image-caption">{post.image_caption}</figcaption>
           )}
@@ -172,13 +203,13 @@ function SingleNews() {
 
           {submissionState === "success" && (
             <div className="alert success">
-              <span className="icon">✅</span> Your comment has been posted successfully!
+              <span className="icon">✅</span> Your comment has been posted!
             </div>
           )}
 
           {submissionState === "error" && (
             <div className="alert error">
-              <span className="icon">⚠️</span> Failed to submit comment. Please try again.
+              <span className="icon">⚠️</span> Failed to submit comment.
             </div>
           )}
 

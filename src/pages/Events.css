@@ -6,6 +6,7 @@
   background: #f4f9ff;
 }
 
+/* Section Title */
 .events-heading {
   text-align: center;
   font-size: 2rem;
@@ -13,10 +14,15 @@
   margin-bottom: 2rem;
 }
 
-.no-events {
+/* Loading, Error, No Events */
+.no-events,
+.error-message,
+.loading-message {
   text-align: center;
   font-style: italic;
+  font-size: 1rem;
   color: #777;
+  margin: 2rem 0;
 }
 
 /* Event Grid Layout */
@@ -57,11 +63,14 @@
 .event-title {
   color: #ff0033;
   font-size: 1.4rem;
+  font-weight: 600;
   margin-bottom: 0.5rem;
 }
 
 .event-description {
   color: #333;
+  font-size: 0.95rem;
+  line-height: 1.5;
   margin-bottom: 1rem;
 }
 
@@ -69,6 +78,9 @@
   color: #555;
   font-weight: 500;
   font-size: 0.95rem;
+  display: flex;
+  gap: 1rem;
+  align-items: center;
 }
 
 /* Responsive Design */

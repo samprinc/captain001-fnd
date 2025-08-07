@@ -1,0 +1,94 @@
+.offers-section {
+  padding: 4rem 1rem;
+  background: linear-gradient(to right, #fdfbfb, #ebedee);
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.offers-section::before {
+  content: '';
+  position: absolute;
+  top: -50px;
+  right: -50px;
+  width: 200px;
+  height: 200px;
+  background: radial-gradient(circle, #0077cc33 0%, transparent 70%);
+  z-index: 0;
+}
+
+.offers-section h2 {
+  font-size: 2.5rem;
+  margin-bottom: 2rem;
+  color: #111;
+  font-weight: 700;
+  position: relative;
+  z-index: 1;
+}
+
+.offers-list {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 1;
+}
+
+.offer-card {
+  background: #ffffff;
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+  text-decoration: none;
+  color: #222;
+  width: 320px;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  border-left: 6px solid #0077cc;
+}
+
+.offer-card::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 5px;
+  width: 100%;
+  background: linear-gradient(90deg, #0077cc, #00c2ff);
+  transition: width 0.3s ease;
+}
+
+.offer-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.08);
+}
+
+.offer-card h3 {
+  font-size: 1.3rem;
+  margin-bottom: 0.7rem;
+  color: #111;
+  font-weight: 600;
+}
+
+.offer-expiry {
+  font-size: 0.95rem;
+  color: #666;
+  margin-bottom: 1rem;
+}
+
+.offer-cta {
+  font-weight: bold;
+  color: #0077cc;
+  font-size: 1rem;
+  display: inline-block;
+  margin-top: 1rem;
+  transition: color 0.2s ease;
+}
+
+.offer-card:hover .offer-cta {
+  color: #004a99;
+}
