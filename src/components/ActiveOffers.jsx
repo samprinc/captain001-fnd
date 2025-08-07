@@ -8,7 +8,7 @@ function ActiveOffers() {
  useEffect(() => {
   const fetchOffers = async () => {
     try {
-      const response = await fetch("http://localhost:8000/api/active-offers/");
+      const response = await fetch("https://captain001-bnd.onrender.com/api/active-offers/");
       const data = await response.json();
       console.log("Fetched offers:", data); // should be an object with "results"
       setOffers(data.results); // FIXED: access the actual array

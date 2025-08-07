@@ -10,12 +10,19 @@ function RecentEngagements() {
   useEffect(() => {
     const fetchEngagements = async () => {
       try {
-        const response = await fetch("http://127.0.0.1:8000/api/engagements/");
+        const response = await fetch("https://captain001-bnd.onrender.com/api/engagements/");
         if (!response.ok) {
           throw new Error("Failed to fetch engagements");
         }
+
         const data = await response.json();
-        setEngagements(data);
+        console.log("Fetched engagements:", data);
+
+        if (Array.isArray(data.results)) {
+          setEngagements(data.results);
+        } else {
+          setError("Unexpected response format");
+        }
       } catch (err) {
         console.error("Error fetching engagements:", err);
         setError("Could not load recent engagements.");
