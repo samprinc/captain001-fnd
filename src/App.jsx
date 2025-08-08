@@ -2,10 +2,15 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import AdvertiseWithUs from "./pages/AdvertiseWithUs";
+import FloatingWhatsapp from "./components/FloatingWhatsapp";
 
 // Layout Components
 import Header from "./components/Header";
 import Footer from "./components/Footer";
+
+import PrivacyPolicy from "./pages/PrivacyPolicy";
+import TermsAndConditions from "./pages/TermsAndConditions";
 
 // Page Components
 import Home from "./pages/Home";
@@ -40,14 +45,18 @@ function App() {
             <Route path="/events" element={<Events />} />
             <Route path="/ads" element={<Ads />} />
             <Route path="/partners" element={<Partners />} />
+            <Route path="/advertise" element={<AdvertiseWithUs />} />
             <Route path="/book" element={<Book />} />
             <Route path="/feedback" element={<Feedback />} />
+            <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+            <Route path="/terms-and-conditions" element={<TermsAndConditions />} />
             <Route path="/contact" element={<Contact />} />
             <Route path="/about" element={<AboutUs />} /> 
             <Route path="*" element={<NotFound />} />
           </Routes>
         </main>
         <Footer />
+        <FloatingWhatsapp />
         <ToastContainer position="top-right" autoClose={3000} />
       </div>
     </BrowserRouter>

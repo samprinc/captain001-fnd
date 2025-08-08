@@ -1,27 +1,40 @@
+/* Ensure content is below header */
 .events-container {
-  padding: 3rem 1rem;
+  padding: 5rem 1rem 3rem; /* Extra top padding to avoid overlap with header */
   max-width: 1200px;
   margin: auto;
   font-family: "Segoe UI", sans-serif;
-  background: #f4f9ff;
+  background: #f5f7fa; /* Clean light background */
 }
 
 /* Section Title */
 .events-heading {
   text-align: center;
-  font-size: 2rem;
-  color: #013a63;
+  font-size: 2.2rem;
+  font-weight: 700;
+  color: #0f172a;
   margin-bottom: 2rem;
+  position: relative;
 }
 
-/* Loading, Error, No Events */
+.events-heading::after {
+  content: "";
+  display: block;
+  width: 80px;
+  height: 4px;
+  background: linear-gradient(90deg, #ff0033, #ff8c00);
+  margin: 0.5rem auto 0;
+  border-radius: 2px;
+}
+
+/* Messages */
 .no-events,
 .error-message,
 .loading-message {
   text-align: center;
   font-style: italic;
   font-size: 1rem;
-  color: #777;
+  color: #555;
   margin: 2rem 0;
 }
 
@@ -32,30 +45,31 @@
   gap: 2rem;
 }
 
-/* Event Card Design */
+/* Event Card */
 .event-card {
   background: #ffffff;
-  border-radius: 12px;
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
+  border-radius: 14px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.07);
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  transition: transform 0.3s ease;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .event-card:hover {
-  transform: scale(1.02);
+  transform: translateY(-5px);
+  box-shadow: 0 12px 25px rgba(0, 0, 0, 0.12);
 }
 
-/* Poster/Banner Image */
+/* Event Banner */
 .event-banner {
   width: 100%;
-  height: 200px;
+  height: 220px;
   object-fit: cover;
-  border-bottom: 3px solid #00ffcc; /* Luminous accent */
+  border-bottom: 3px solid #ff0033;
 }
 
-/* Event Text Info */
+/* Event Details */
 .event-details {
   padding: 1.5rem;
 }
@@ -63,12 +77,12 @@
 .event-title {
   color: #ff0033;
   font-size: 1.4rem;
-  font-weight: 600;
+  font-weight: 700;
   margin-bottom: 0.5rem;
 }
 
 .event-description {
-  color: #333;
+  color: #374151;
   font-size: 0.95rem;
   line-height: 1.5;
   margin-bottom: 1rem;
@@ -77,16 +91,16 @@
 .event-meta {
   color: #555;
   font-weight: 500;
-  font-size: 0.95rem;
+  font-size: 0.9rem;
   display: flex;
   gap: 1rem;
   align-items: center;
 }
 
-/* Responsive Design */
+/* Responsive */
 @media (max-width: 768px) {
   .events-container {
-    padding: 2rem 1rem;
+    padding: 4rem 1rem 2rem;
   }
 
   .event-banner {

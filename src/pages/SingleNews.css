@@ -305,3 +305,31 @@
   0% { background-position: -500px 0; }
   100% { background-position: 500px 0; }
 }
+.post-author-section {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 1rem 0;
+  padding: 0.8rem 1rem;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+}
+
+.author-avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.post-author-name {
+  font-weight: 600;
+  font-size: 1rem;
+  color: #333;
+}
+
+.post-author-bio {
+  font-size: 0.85rem;
+  color: #666;
+}

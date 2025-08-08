@@ -1,0 +1,27 @@
+.floating-whatsapp {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background-color: #25d366;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  transition: background-color 0.3s ease;
+  z-index: 10000;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.floating-whatsapp:hover,
+.floating-whatsapp:focus {
+  background-color: #1ebe57;
+  outline: none;
+}
+
+.floating-whatsapp svg {
+  display: block;
+}

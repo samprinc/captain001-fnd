@@ -64,6 +64,12 @@ export const fetchCategories = () => API.get("categories/");
 export const fetchTags = () => API.get("tags/");
 
 /**
+ * Fetches a list of all authors.
+ * @returns {Promise<AxiosResponse>} A promise that resolves to the API response containing authors data.
+ */
+export const fetchAuthors = () => API.get("authors/");
+
+/**
  * Fetches a single author's details by their ID.
  * @param {string|number} id - The unique identifier of the author.
  * @returns {Promise<AxiosResponse>} A promise that resolves to the API response containing the specific author data.

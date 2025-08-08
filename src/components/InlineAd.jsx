@@ -3,41 +3,76 @@ import { formatImage, trackAdView, trackAdClick } from "../utils/adTracking";
 import "./InlineAd.css";
 
 function InlineAd({ ads = [] }) {
-  const inlineAd = ads.find((ad) => ad.placement === "inline");
+  const inlineAds = ads.filter((ad) => ad.placement === "inline");
+  const [currentIndex, setCurrentIndex] = useState(0);
   const [isVisible, setIsVisible] = useState(true);
 
   useEffect(() => {
-    if (inlineAd) {
-      trackAdView(inlineAd.id);
+    if (inlineAds.length > 0) {
+      const currentAd = inlineAds[currentIndex];
+      trackAdView(currentAd.id);
 
-      const timer = setTimeout(() => {
+      const rotateTimer = setInterval(() => {
         setIsVisible(false);
-      }, 6000); // Hide after 6 seconds
+        setTimeout(() => {
+          setCurrentIndex((prevIndex) => (prevIndex + 1) % inlineAds.length);
+          setIsVisible(true);
+        }, 500);
+      }, 6000);
 
-      return () => clearTimeout(timer); // Cleanup
+      return () => clearInterval(rotateTimer);
     }
-  }, [inlineAd]);
+  }, [inlineAds, currentIndex]);
 
-  if (!inlineAd || !isVisible) return null;
+  if (inlineAds.length === 0) return null;
+
+  const currentAd = inlineAds[currentIndex];
+
+  // Auto-generate tagline if missing
+  const tagline = currentAd.tagline
+    ? currentAd.tagline
+    : currentAd.description
+    ? currentAd.description.split(" ").slice(0, 15).join(" ") + "..."
+    : "";
 
   const handleClick = () => {
-    trackAdClick(inlineAd.id);
+    trackAdClick(currentAd.id);
   };
 
   return (
-    <div className="inline-ad-box">
-      <a
-        href={inlineAd.link || "#"}
-        target="_blank"
-        rel="noreferrer"
-        onClick={handleClick}
-      >
-        <img
-          src={formatImage(inlineAd.image)}
-          alt={inlineAd.title || "Ad"}
-          className="inline-ad-image"
-        />
-      </a>
+    <div
+      className="inline-ad-box"
+      style={{
+        opacity: isVisible ? 1 : 0,
+        transition: "opacity 0.5s ease-in-out"
+      }}
+    >
+      <div className="inline-ad">
+        <span className="ad-label">Sponsored</span>
+        <a
+          href={currentAd.link || "#"}
+          target="_blank"
+          rel="noreferrer"
+          onClick={handleClick}
+        >
+          <img
+            src={formatImage(currentAd.image)}
+            alt={currentAd.title || "Ad"}
+            className="inline-ad-image"
+          />
+        </a>
+        {currentAd.title && (
+          <div className="inline-ad-title">{currentAd.title}</div>
+        )}
+        {tagline && (
+          <div className="inline-ad-tagline">{tagline}</div>
+        )}
+        <div className="inline-ad-footer">
+          <a href="/advertise" className="inline-ad-brand">
+            Ad by CaptainMedia
+          </a>
+        </div>
+      </div>
     </div>
   );
 }

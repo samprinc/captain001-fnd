@@ -1,8 +1,6 @@
-// src/components/BookingForm.jsx
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { fetchServices, submitBooking } from "../api/api";
-import Spinner from "./Spinner";
 import "./BookingForm.css";
 
 function BookingForm() {
@@ -12,7 +10,7 @@ function BookingForm() {
     name: "",
     email: "",
     phone: "",
-    service: "", // Will be set to service ID
+    service: "",
     message: "",
   });
 
@@ -52,7 +50,6 @@ function BookingForm() {
     setSubmissionError("");
 
     try {
-      console.log("Submitting booking:", formData); // ✅ Debug
       await submitBooking(formData);
       setSubmitted(true);
       setFormData({ name: "", email: "", phone: "", service: "", message: "" });
@@ -64,7 +61,21 @@ function BookingForm() {
     }
   };
 
-  if (loading) return <Spinner />;
+  // Skeleton loader while fetching services
+  if (loading) {
+    return (
+      <div className="booking-form-page-container">
+        <div className="booking-form-card skeleton">
+          <div className="skeleton-text title"></div>
+          <div className="skeleton-text subtitle"></div>
+          {[...Array(5)].map((_, i) => (
+            <div key={i} className="skeleton-input"></div>
+          ))}
+          <div className="skeleton-btn"></div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="booking-form-page-container">

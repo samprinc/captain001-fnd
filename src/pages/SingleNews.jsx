@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { fetchPost, submitComment } from "../api/api";
+import { fetchPost, fetchAuthor, submitComment } from "../api/api";
 import CommentBox from "../components/CommentBox";
 import Spinner from "../components/Spinner";
 
@@ -10,6 +10,7 @@ function SingleNews() {
   const { id } = useParams();
 
   const [post, setPost] = useState(null);
+  const [author, setAuthor] = useState(null);
   const [comments, setComments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -26,24 +27,31 @@ function SingleNews() {
   // Load post and comments
   useEffect(() => {
     const loadPost = async () => {
-      setLoading(true);
-      try {
-        const res = await fetchPost(id);
-        const post = res?.data;
+  setLoading(true);
+  try {
+    const res = await fetchPost(id);
+    const postData = res?.data;
 
-        if (post) {
-          setPost(post);
-          setComments(Array.isArray(post.comments) ? post.comments : []);
-        } else {
-          setError("Post not found.");
-        }
-      } catch (err) {
-        console.error("Error fetching post:", err);
-        setError("Failed to load post. Please try again later.");
-      } finally {
-        setLoading(false);
+    if (postData) {
+      setPost(postData);
+      setComments(Array.isArray(postData.comments) ? postData.comments : []);
+
+      if (postData.author) {
+        // If it's just an ID
+        const authorRes = await fetchAuthor(postData.author);
+        setAuthor(authorRes.data);
       }
-    };
+    } else {
+      setError("Post not found.");
+    }
+  } catch (err) {
+    console.error("Error fetching post:", err);
+    setError("Failed to load post. Please try again later.");
+  } finally {
+    setLoading(false);
+  }
+};
+
 
     loadPost();
   }, [id]);
@@ -149,9 +157,22 @@ function SingleNews() {
       <header className="post-header">
         <h1 className="post-title">{post.title}</h1>
         <div className="post-meta">
-          <span className="post-author">
-            By {post.author?.name || "Unknown Author"}
-          </span>
+         <div className="post-author-section">
+  {author && (
+    <>
+      <img
+        src={author.profile_picture}
+        alt={author.name}
+        className="author-avatar"
+      />
+      <div>
+        <span className="post-author-name">{author.name}</span>
+        {author.bio && <p className="post-author-bio">{author.bio}</p>}
+      </div>
+    </>
+  )}
+</div>
+
           <span className="post-date">
             {new Date(post.publish_at).toLocaleDateString("en-US", {
               year: "numeric",

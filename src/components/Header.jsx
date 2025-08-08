@@ -63,6 +63,7 @@ function Header() {
     { name: "Home", path: "/" },
     { name: "Services", path: "/services" },
     { name: "News", path: "/news" },
+    { name: 'Advertise with us', path: "Advertise"},
     { name: "Events", path: "/events" },
     {
       name: "More",
@@ -73,7 +74,7 @@ function Header() {
           items: [
             { name: "About Us", path: "/about" },
             { name: "Partners", path: "/partners" },
-            { name: "Privacy Policy", path: "/privacy" },
+            { name: "Privacy Policy", path: "/privacy-policy" },
           ],
         },
         {

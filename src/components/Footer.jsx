@@ -25,7 +25,6 @@ function Footer() {
           <ul>
             <li><Link to="/about">About Us</Link></li>
             <li><Link to="/author">Our Authors</Link></li>
-            <li><Link to="/experts">Our Experts</Link></li>
             <li><Link to="/contact">Contact Us</Link></li>
            
           </ul>
@@ -36,9 +35,7 @@ function Footer() {
           <h4>Legal</h4>
           <ul>
             <li><Link to="/privacy-policy">Privacy Policy</Link></li>
-            <li><Link to="/terms">Terms & Conditions</Link></li>
-            <li><Link to="/policies">Policies & Standards</Link></li>
-            <li><Link to="/cookie-policy">Cookie Policy</Link></li>
+            <li><Link to="/terms-and-conditions">Terms & Conditions</Link></li>
           </ul>
         </div>
 
@@ -46,7 +43,6 @@ function Footer() {
         <div className="footer-column">
           <h4>Explore</h4>
           <ul>
-            <li><Link to="/tags">Tags</Link></li>
             <li><Link to="/categories">Categories</Link></li>
           </ul>
         </div>
