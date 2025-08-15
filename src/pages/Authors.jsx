@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import { fetchAuthors } from "../api/api";
 import "./Author.css";
 
+const CLOUDINARY_BASE_URL = "https://res.cloudinary.com/dco3yxmss/";
+
 function Authors() {
   const [authors, setAuthors] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -30,7 +32,6 @@ function Authors() {
     loadAuthors();
   }, []);
 
-  // Skeleton Loader
   if (loading) {
     return (
       <div className="authors-section">
@@ -54,22 +55,25 @@ function Authors() {
   if (error) return <p className="error-message">{error}</p>;
 
   return (
-    <div className="authors-section">
-      <div className="authors-header">
+    <section className="authors-section">
+      <header className="authors-header">
         <h1>Meet Our Authors</h1>
         <p>Passionate storytellers bringing you the latest and best from CaptainMedia.</p>
-      </div>
+      </header>
 
       <div className="authors-list">
         {authors.map((author) => (
-          <div key={author.id} className="author-card">
-            <img src={author.profile_picture} alt={author.name} />
+          <article key={author.id} className="author-card">
+            <img
+              src={author.profile_pic ? `${CLOUDINARY_BASE_URL}${author.profile_pic}` : "/default-profile.png"}
+              alt={author.name}
+            />
             <h3>{author.name}</h3>
             <p>{author.bio}</p>
-          </div>
+          </article>
         ))}
       </div>
-    </div>
+    </section>
   );
 }
 
