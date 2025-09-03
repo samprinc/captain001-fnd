@@ -7,8 +7,9 @@ function NewsCard({ post, layout = "horizontal" }) {
   const fullImageUrl = formatImage(post?.image);
   const timeAgo = formatTimeAgo(post.publish_at);
 
+  // Keep HTML for snippet instead of stripping
   const snippet = post?.content
-    ? post.content.replace(/<[^>]+>/g, "").slice(0, 130) + "..."
+    ? post.content.slice(0, 200) + "..."
     : post?.excerpt || "";
 
   return (
@@ -28,7 +29,10 @@ function NewsCard({ post, layout = "horizontal" }) {
             <span className="post-date">{timeAgo}</span>
           </span>
         )}
-        <p className="news-snippet">{snippet}</p>
+        <p
+          className="news-snippet"
+          dangerouslySetInnerHTML={{ __html: snippet }}
+        />
         <Link to={`/news/${post.id}`} className="read-more">
           Read More →
         </Link>

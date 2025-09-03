@@ -4,6 +4,7 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import AdvertiseWithUs from "./pages/AdvertiseWithUs";
 import FloatingWhatsapp from "./components/FloatingWhatsapp";
+import AuthorDetail from "./pages/AuthorDetail";
 
 // Layout Components
 import Header from "./components/Header";
@@ -46,6 +47,7 @@ function App() {
             <Route path="/ads" element={<Ads />} />
             <Route path="/partners" element={<Partners />} />
             <Route path="/advertise" element={<AdvertiseWithUs />} />
+            <Route path="/authors/:id" element={<AuthorDetail />} />
             <Route path="/book" element={<Book />} />
             <Route path="/feedback" element={<Feedback />} />
             <Route path="/privacy-policy" element={<PrivacyPolicy />} />

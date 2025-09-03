@@ -2,9 +2,9 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { fetchPost, fetchAuthor, submitComment } from "../api/api";
 import CommentBox from "../components/CommentBox";
-import Spinner from "../components/Spinner";
-
+import { formatImage } from "../utils/formatImage"; // adjust path if needed
 import "./SingleNews.css";
+import { Link } from "react-router-dom"; // for author link
 
 function SingleNews() {
   const { id } = useParams();
@@ -157,11 +157,11 @@ function SingleNews() {
       <header className="post-header">
         <h1 className="post-title">{post.title}</h1>
         <div className="post-meta">
-         <div className="post-author-section">
+        <div className="post-author-section">
   {author && (
-    <>
+    <Link to={`/authors/${author.id}`} className="author-link">
       <img
-        src={author.profile_picture}
+        src={formatImage(author.profile_pic)}
         alt={author.name}
         className="author-avatar"
       />
@@ -169,7 +169,7 @@ function SingleNews() {
         <span className="post-author-name">{author.name}</span>
         {author.bio && <p className="post-author-bio">{author.bio}</p>}
       </div>
-    </>
+    </Link>
   )}
 </div>
 

@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom"; // ✅ for linking to AuthorDetail
 import { fetchAuthors } from "../api/api";
+import { formatImage } from "../utils/formatImage"; 
 import "./Author.css";
-
-const CLOUDINARY_BASE_URL = "https://res.cloudinary.com/dco3yxmss/";
 
 function Authors() {
   const [authors, setAuthors] = useState([]);
@@ -63,14 +63,21 @@ function Authors() {
 
       <div className="authors-list">
         {authors.map((author) => (
-          <article key={author.id} className="author-card">
-            <img
-              src={author.profile_pic ? `${CLOUDINARY_BASE_URL}${author.profile_pic}` : "/default-profile.png"}
-              alt={author.name}
-            />
-            <h3>{author.name}</h3>
-            <p>{author.bio}</p>
-          </article>
+          <Link
+            to={`/authors/${author.id}`} // ✅ link to AuthorDetail
+            key={author.id}
+            className="author-card-link"
+          >
+            <article className="author-card">
+              <img
+                src={formatImage(author.profile_pic)}
+                alt={author.name}
+                className="author-avatar"
+              />
+              <h3>{author.name}</h3>
+              <p>{author.bio}</p>
+            </article>
+          </Link>
         ))}
       </div>
     </section>

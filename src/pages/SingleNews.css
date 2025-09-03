@@ -8,6 +8,7 @@
   font-family: var(--font-family);
   line-height: 1.6;
   color: var(--text-color);
+  margin-top: 90px;
 }
 
 .post-header {

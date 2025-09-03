@@ -191,64 +191,73 @@ function Header() {
           </button>
         </div>
       </div>
-      <div className={`mobile-menu-container ${uiState.isMenuOpen ? "open" : ""}`}>
-        <nav className="mobile-nav">
-          <ul className="mobile-nav-list">
-            {menuLinks.map((link) => (
-              <li key={link.name} className="mobile-nav-item">
-                {link.dropdown ? (
-                  <>
-                    <button
-                      className={`mobile-dropdown-toggle ${
-                        uiState.activeDropdown === link.name ? "active" : ""
-                      }`}
-                      onClick={() => handleDropdownToggle(link.name)}
-                    >
-                      {link.name}
-                      <FaChevronDown className={`mobile-dropdown-icon ${
-                        uiState.activeDropdown === link.name ? "rotate" : ""
-                      }`} />
-                    </button>
-                    <div
-                      className={`mobile-dropdown-menu ${
-                        uiState.activeDropdown === link.name ? "open" : ""
-                      }`}
-                    >
-                      {link.items.map((group) => (
-                        <div key={group.name} className="mobile-dropdown-group">
-                          <h4 className="mobile-dropdown-group-title">{group.name}</h4>
-                          {group.items.map((item) => (
-                            <NavLink
-                              key={item.path}
-                              to={item.path}
-                              className={({ isActive }) =>
-                                `mobile-dropdown-item ${isActive ? "active-link" : ""}`
-                              }
-                              onClick={handleLinkClick}
-                            >
-                              {item.name}
-                            </NavLink>
-                          ))}
-                        </div>
-                      ))}
-                    </div>
-                  </>
-                ) : (
-                  <NavLink
-                    to={link.path}
-                    className={({ isActive }) =>
-                      `mobile-nav-link ${isActive ? "active-link" : ""}`
-                    }
-                    onClick={handleLinkClick}
-                  >
-                    {link.name}
-                  </NavLink>
-                )}
-              </li>
-            ))}
-          </ul>
-        </nav>
-      </div>
+     <div
+  className={`mobile-menu-container ${uiState.isMenuOpen ? "open" : ""}`}
+  onClick={() => toggleState("isMenuOpen", false)} // closes when clicking outside
+>
+  <nav
+    className="mobile-nav"
+    onClick={(e) => e.stopPropagation()} // stops closing when clicking inside
+  >
+    <ul className="mobile-nav-list">
+      {menuLinks.map((link) => (
+        <li key={link.name} className="mobile-nav-item">
+          {link.dropdown ? (
+            <>
+              <button
+                className={`mobile-dropdown-toggle ${
+                  uiState.activeDropdown === link.name ? "active" : ""
+                }`}
+                onClick={() => handleDropdownToggle(link.name)}
+              >
+                {link.name}
+                <FaChevronDown
+                  className={`mobile-dropdown-icon ${
+                    uiState.activeDropdown === link.name ? "rotate" : ""
+                  }`}
+                />
+              </button>
+              <div
+                className={`mobile-dropdown-menu ${
+                  uiState.activeDropdown === link.name ? "open" : ""
+                }`}
+              >
+                {link.items.map((group) => (
+                  <div key={group.name} className="mobile-dropdown-group">
+                    <h4 className="mobile-dropdown-group-title">{group.name}</h4>
+                    {group.items.map((item) => (
+                      <NavLink
+                        key={item.path}
+                        to={item.path}
+                        className={({ isActive }) =>
+                          `mobile-dropdown-item ${isActive ? "active-link" : ""}`
+                        }
+                        onClick={handleLinkClick}
+                      >
+                        {item.name}
+                      </NavLink>
+                    ))}
+                  </div>
+                ))}
+              </div>
+            </>
+          ) : (
+            <NavLink
+              to={link.path}
+              className={({ isActive }) =>
+                `mobile-nav-link ${isActive ? "active-link" : ""}`
+              }
+              onClick={handleLinkClick}
+            >
+              {link.name}
+            </NavLink>
+          )}
+        </li>
+      ))}
+    </ul>
+  </nav>
+</div>
+
       <div className={`search-bar-container ${uiState.isSearchVisible ? "open" : ""}`}>
         <form onSubmit={handleSearchSubmit} className="search-form">
           <label htmlFor="search-input" className="visually-hidden">

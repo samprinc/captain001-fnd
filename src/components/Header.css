@@ -410,8 +410,7 @@ body {
   .mobile-nav-link, .mobile-dropdown-toggle {
     display: block;
     padding: 1rem 0;
-    color: var(--text-color);
-    text-decoration: none;
+    color: var(--dark-color, #222);     text-decoration: none;
     font-weight: 500;
     transition: var(--transition-fast);
     width: 100%;

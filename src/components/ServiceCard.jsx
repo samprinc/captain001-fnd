@@ -3,7 +3,12 @@ import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
 import "./ServiceCard.css";
 
-function ServiceCard({ title, description, icon, to }) {
+function ServiceCard({ 
+  title, 
+  description, 
+  icon = null,   // ✅ default value moved here
+  to 
+}) {
   const isFontAwesome = icon?.startsWith("fa");
   const imageUrl = isFontAwesome ? null : `https://res.cloudinary.com/dco3yxmss/${icon}`;
 
@@ -30,10 +35,6 @@ ServiceCard.propTypes = {
   description: PropTypes.string.isRequired,
   icon: PropTypes.string,
   to: PropTypes.string.isRequired,
-};
-
-ServiceCard.defaultProps = {
-  icon: null,
 };
 
 export default ServiceCard;
