@@ -5,15 +5,19 @@ import "./NewsletterForm.css";
 function NewsletterForm() {
   const [email, setEmail] = useState("");
   const [success, setSuccess] = useState(false);
+  const [error, setError] = useState(null);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post("http://127.0.0.1:8000/api/newsletter/", { email });
+      await axios.post("https://captain001-bnd.onrender.com/api/newsletter/", { email });
       setSuccess(true);
+      setError(null);
       setEmail("");
-    } catch (error) {
-      console.error("Newsletter signup failed", error);
+    } catch (err) {
+      console.error("Newsletter signup failed", err);
+      setError("Failed to subscribe. Try again!");
+      setSuccess(false);
     }
   };
 
@@ -34,6 +38,7 @@ function NewsletterForm() {
       />
       <button type="submit">Subscribe</button>
       {success && <p className="success-message">Thank you for subscribing!</p>}
+      {error && <p className="error-message">{error}</p>}
     </form>
   );
 }
