@@ -10,7 +10,8 @@ function NewsletterForm() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post("https://captain001-bnd.onrender.com/api/newsletter/", { email });
+      await axios.post(`${import.meta.env.VITE_API_URL}/newsletter/`, { email });
+
       setSuccess(true);
       setError(null);
       setEmail("");
