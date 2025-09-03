@@ -478,6 +478,89 @@ body {
     color: var(--primary-color);
     font-weight: 500;
   }
+  /* Dropdown toggle button */
+.mobile-dropdown-toggle {
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--text-color);
+  width: 100%;
+  text-align: left;
+  background: none;
+  border: none;
+  padding: 1rem 0;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: color 0.3s ease;
+}
+
+.mobile-dropdown-toggle:hover {
+  color: var(--primary-color);
+}
+
+.mobile-dropdown-icon {
+  transition: transform 0.3s ease;
+}
+
+.mobile-dropdown-icon.rotate {
+  transform: rotate(180deg);
+}
+
+/* Dropdown menu */
+.mobile-dropdown-menu {
+  max-height: 0;
+  overflow: hidden;
+  opacity: 0;
+  padding: 0;
+  margin-left: 0.5rem;
+  border-left: 2px solid var(--light-color);
+  background-color: var(--light-color);
+  border-radius: var(--radius-md);
+  transition: all 0.3s ease-in-out;
+}
+
+.mobile-dropdown-menu.open {
+  max-height: 600px; /* enough to fit items */
+  opacity: 1;
+  padding: 0.5rem 0;
+}
+
+/* Grouping (e.g. Company, Connect) */
+.mobile-dropdown-group {
+  margin-bottom: 0.75rem;
+}
+
+.mobile-dropdown-group-title {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--primary-color);
+  padding: 0.25rem 1rem;
+  margin: 0.25rem 0;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Dropdown items */
+.mobile-dropdown-item {
+  display: block;
+  padding: 0.75rem 1.25rem;
+  font-size: 0.9rem;
+  color: var(--text-color);
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
+
+.mobile-dropdown-item:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+  color: var(--primary-color);
+}
+
+.mobile-dropdown-item.active-link {
+  font-weight: 600;
+  color: var(--primary-color);
+}
+
 }
 
 /*
