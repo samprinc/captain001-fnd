@@ -74,7 +74,10 @@ export const fetchAuthors = () => API.get("authors/");
  * @param {string|number} id - The unique identifier of the author.
  * @returns {Promise<AxiosResponse>} A promise that resolves to the API response containing the specific author data.
  */
-export const fetchAuthor = (id) => API.get(`authors/${id}/`);
+export const fetchAuthor = (author) => {
+  const authorId = typeof author === "object" ? author.id : author;
+  return API.get(`authors/${authorId}/`);
+};
 
 // --- POST Requests ---
 

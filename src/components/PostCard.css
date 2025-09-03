@@ -9,8 +9,13 @@
   color: #1a1a1a;
   transition: box-shadow 0.3s ease, transform 0.3s ease;
   height: 100%;
+  max-width: 400px; /* instead of fixed width */
+  flex: 1 1 300px; /* grow/shrink, base width 300px */
+  margin: 1rem;   /* space between cards */
 }
-
+.news-card:first-child {
+  margin-left: 0;
+}
 .news-card:hover {
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
   transform: translateY(-4px);
