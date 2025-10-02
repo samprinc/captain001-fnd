@@ -1,39 +1,28 @@
-import { useEffect, useState } from "react";
-import { fetchEvents } from "../api/api";
+import React from "react";
+import { useEventsQuery } from "../hooks/queries"; // create this query hook
 import "./Events.css";
 
 function Events() {
-  const [events, setEvents] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
-
-  useEffect(() => {
-    fetchEvents()
-      .then((res) => {
-        const results = res?.data?.results || [];
-        setEvents(results);
-        if (results.length === 0) {
-          setError("No events available at the moment.");
-        }
-      })
-      .catch((err) => {
-        console.error("Failed to fetch events", err);
-        setError("Failed to load events. Please try again later.");
-      })
-      .finally(() => {
-        setLoading(false);
-      });
-  }, []);
+  // Use query hook for fetching events
+  const { data: events = [], isLoading, error } = useEventsQuery();
 
   return (
     <div className="events-container">
       <h2 className="events-heading">🎉 Upcoming Events</h2>
 
-      {loading && <p className="loading-message">Loading events...</p>}
+      {isLoading && <p className="loading-message">Loading events...</p>}
 
-      {!loading && error && <p className="error-message">{error}</p>}
+      {!isLoading && error && (
+        <p className="error-message">
+          {error?.message || "Failed to load events. Please try again later."}
+        </p>
+      )}
 
-      {!loading && !error && events.length > 0 && (
+      {!isLoading && !error && events.length === 0 && (
+        <p className="error-message">No events available at the moment.</p>
+      )}
+
+      {!isLoading && !error && events.length > 0 && (
         <div className="event-grid">
           {events.map((event) => (
             <div key={event.id} className="event-card">

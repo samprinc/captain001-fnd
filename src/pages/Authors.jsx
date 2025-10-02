@@ -1,58 +1,37 @@
-import { useEffect, useState } from "react";
-import { Link } from "react-router-dom"; // ✅ for linking to AuthorDetail
+import React from "react";
+import { Link } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
 import { fetchAuthors } from "../api/api";
-import { formatImage } from "../utils/formatImage"; 
+import { formatImage } from "../utils/formatImage";
 import "./Author.css";
 
+// Skeleton for loading state
+function AuthorSkeleton() {
+  return (
+    <div className="author-card skeleton">
+      <div className="skeleton-img"></div>
+      <div className="skeleton-text short"></div>
+      <div className="skeleton-text long"></div>
+    </div>
+  );
+}
+
 function Authors() {
-  const [authors, setAuthors] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const { data: authors = [], isLoading, isError } = useQuery({
+    queryKey: ["authors"],
+    queryFn: async () => {
+      const res = await fetchAuthors();
+      // Ensure it's always an array
+      return Array.isArray(res?.data)
+        ? res.data
+        : Array.isArray(res?.data?.results)
+        ? res.data.results
+        : [];
+    },
+    staleTime: 1000 * 60 * 10, // cache 10 minutes
+  });
 
-  useEffect(() => {
-    const loadAuthors = async () => {
-      try {
-        const res = await fetchAuthors();
-
-        const data = Array.isArray(res.data)
-          ? res.data
-          : Array.isArray(res.data.results)
-          ? res.data.results
-          : [];
-
-        setAuthors(data);
-      } catch (err) {
-        console.error("Error fetching authors:", err);
-        setError("Failed to load authors.");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    loadAuthors();
-  }, []);
-
-  if (loading) {
-    return (
-      <div className="authors-section">
-        <div className="authors-header">
-          <h1>Meet Our Authors</h1>
-          <p>Passionate storytellers bringing you the latest and best from CaptainMedia.</p>
-        </div>
-        <div className="authors-list">
-          {[...Array(4)].map((_, i) => (
-            <div key={i} className="author-card skeleton">
-              <div className="skeleton-img"></div>
-              <div className="skeleton-text short"></div>
-              <div className="skeleton-text long"></div>
-            </div>
-          ))}
-        </div>
-      </div>
-    );
-  }
-
-  if (error) return <p className="error-message">{error}</p>;
+  if (isError) return <p className="error-message">Failed to load authors.</p>;
 
   return (
     <section className="authors-section">
@@ -62,23 +41,26 @@ function Authors() {
       </header>
 
       <div className="authors-list">
-        {authors.map((author) => (
-          <Link
-            to={`/authors/${author.id}`} // ✅ link to AuthorDetail
-            key={author.id}
-            className="author-card-link"
-          >
-            <article className="author-card">
-              <img
-                src={formatImage(author.profile_pic)}
-                alt={author.name}
-                className="author-avatar"
-              />
-              <h3>{author.name}</h3>
-              <p>{author.bio}</p>
-            </article>
-          </Link>
-        ))}
+        {isLoading
+          ? [...Array(4)].map((_, i) => <AuthorSkeleton key={i} />)
+          : authors.map((author) => (
+              <Link
+                to={`/authors/${author.id}`}
+                key={author.id}
+                className="author-card-link"
+              >
+                <article className="author-card">
+                  <img
+                    src={formatImage(author.profile_pic)}
+                    alt={author.name}
+                    className="author-avatar"
+                    onError={(e) => { e.target.style.display = "none"; }}
+                  />
+                  <h3>{author.name}</h3>
+                  <p>{author.bio}</p>
+                </article>
+              </Link>
+            ))}
       </div>
     </section>
   );

@@ -1,34 +1,30 @@
-import { useEffect, useState } from "react";
-import { fetchServices } from "../api/api";
-
+import React from "react";
+import { useServicesQuery } from "../hooks/queries"; // Your React Query hook
 import ServiceCard from "../components/ServiceCard";
-import Spinner from "../components/Spinner";
-
 import "./Services.css";
 
-function Services() {
-  const [services, setServices] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
+// Skeleton card for loading state
+function ServiceSkeleton() {
+  return (
+    <div className="service-card skeleton">
+      <div className="icon-placeholder" />
+      <h3 className="title-placeholder">&nbsp;</h3>
+      <p className="desc-placeholder">&nbsp;</p>
+    </div>
+  );
+}
 
-  useEffect(() => {
-    fetchServices()
-      .then((res) => {
-        const results = res?.data?.results;
-        if (Array.isArray(results) && results.length > 0) {
-          setServices(results);
-        } else {
-          setError("No services found.");
-        }
-      })
-      .catch((err) => {
-        console.error("Failed to fetch services:", err);
-        setError("Failed to load services.");
-      })
-      .finally(() => {
-        setLoading(false);
-      });
-  }, []);
+function Services() {
+  // Use React Query hook with staleTime and optional initialData
+  const { data: services = [], isLoading, isError, error } = useServicesQuery({
+    staleTime: 1000 * 60 * 10, // 10 minutes
+    initialData: [
+      // Optional static fallback for instant load
+      { id: 1, title: "Photography", description: "Capture memories", icon: "camera" },
+      { id: 2, title: "Videography", description: "Professional videos", icon: "video" },
+      { id: 3, title: "Graphic Design", description: "Creative visuals", icon: "design" },
+    ],
+  });
 
   return (
     <div className="services-page-container">
@@ -40,25 +36,25 @@ function Services() {
         </p>
       </header>
 
-      {loading && <Spinner />}
+      {/* Error State */}
+      {isError && <p className="error-message">{error?.message || "Failed to load services."}</p>}
 
-      {!loading && error && (
-        <p className="error-message">{error}</p>
-      )}
-
-      {!loading && !error && services.length > 0 && (
-        <div className="services-grid">
-          {services.map((service) => (
-            <ServiceCard
-              key={service.id}
-              title={service.title}
-              description={service.description}
-              icon={service.icon}
-              to={`/book`} // Link to booking page
-            />
-          ))}
-        </div>
-      )}
+      {/* Services Grid */}
+      <div className="services-grid">
+        {isLoading
+          ? Array(3)
+              .fill(0)
+              .map((_, idx) => <ServiceSkeleton key={idx} />)
+          : services.map((service) => (
+              <ServiceCard
+                key={service.id}
+                title={service.title}
+                description={service.description}
+                icon={service.icon}
+                to={`/book`}
+              />
+            ))}
+      </div>
     </div>
   );
 }

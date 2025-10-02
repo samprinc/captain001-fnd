@@ -1,36 +1,25 @@
-import React, { useEffect, useState } from "react";
-import { fetchAds } from "../api/api";
+import React from "react";
+import { useAdsQuery } from "../hooks/queries";
 import Spinner from "../components/Spinner";
 import "./Ads.css";
 
 function Ads() {
-  const [ads, setAds] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const { data: ads = [], isLoading } = useAdsQuery();
   const CLOUD_NAME = "dco3yxmss"; // 👈 your Cloudinary name
 
-  useEffect(() => {
-    fetchAds()
-      .then((res) => {
-        const filtered = res.data.results.filter((ad) => ad.active);
-        setAds(filtered);
-      })
-      .catch((err) => {
-        console.error("Failed to load ads:", err);
-      })
-      .finally(() => setLoading(false));
-  }, []);
+  if (isLoading) return <Spinner />;
 
-  if (loading) return <Spinner />;
+  const activeAds = ads.filter((ad) => ad.active);
 
   return (
     <div className="ads-container">
       <h2 className="ads-heading">Advertisements</h2>
 
-      {ads.length === 0 ? (
+      {activeAds.length === 0 ? (
         <p className="no-ads-text">🚫 No active ads found.</p>
       ) : (
         <div className="ads-grid">
-          {ads.map((ad) => {
+          {activeAds.map((ad) => {
             const imageUrl = ad.image?.startsWith("http")
               ? ad.image
               : `https://res.cloudinary.com/${CLOUD_NAME}/${ad.image}`;

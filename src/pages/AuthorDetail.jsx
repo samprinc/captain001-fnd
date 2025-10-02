@@ -20,12 +20,18 @@ function AuthorDetail() {
         const authorRes = await fetchAuthor(id);
         setAuthor(authorRes.data);
 
-        // Fetch posts by this author
-        const postsRes = await fetchPosts({ author: id });
-        const postData = Array.isArray(postsRes.data.results)
+        // Fetch all posts
+        const postsRes = await fetchPosts();
+        const allPosts = Array.isArray(postsRes.data.results)
           ? postsRes.data.results
           : postsRes.data;
-        setPosts(postData);
+
+        // Filter posts by this author only
+        const authorPosts = allPosts.filter(
+          (post) => post.author && String(post.author.id) === String(id)
+        );
+
+        setPosts(authorPosts);
       } catch (err) {
         console.error("Error loading author detail:", err);
         setError("Failed to load author profile.");
@@ -40,7 +46,6 @@ function AuthorDetail() {
   if (loading) {
     return (
       <section className="author-detail">
-        {/* ===== Skeleton for Author Header ===== */}
         <header className="author-header skeleton">
           <div className="skeleton-avatar"></div>
           <div className="skeleton-lines">
@@ -49,7 +54,6 @@ function AuthorDetail() {
           </div>
         </header>
 
-        {/* ===== Skeleton for Posts ===== */}
         <section className="author-posts">
           <h2>Loading Articles...</h2>
           <ul className="author-post-list">
@@ -74,13 +78,14 @@ function AuthorDetail() {
 
   return (
     <section className="author-detail">
+      {/* Author Header */}
       <header className="author-header">
         <img
           src={formatImage(author.profile_pic)}
           alt={author.name}
           className="author-detail-avatar"
         />
-        <div>
+        <div className="author-header-info">
           <h1>{author.name}</h1>
           {author.bio && <p className="author-bio">{author.bio}</p>}
           {author.social_links && (
@@ -100,26 +105,30 @@ function AuthorDetail() {
         </div>
       </header>
 
+      {/* Author Posts */}
       <section className="author-posts">
         <h2>Articles by {author.name}</h2>
         {posts.length === 0 ? (
           <p>No posts yet.</p>
         ) : (
-          <ul className="author-post-list">
+          <ul className="author-post-list news-feed">
             {posts.map((post) => (
-              <li key={post.id} className="author-post-item">
+              <li key={post.id} className="news-card vertical">
                 <Link to={`/news/${post.id}`} className="author-post-link">
-                  <img src={formatImage(post.image)} alt={post.title} className="author-post-image" />
-                  <div className="author-post-info">
-                    <h3>{post.title}</h3>
-                   <p
-  className="author-post-excerpt"
-  dangerouslySetInnerHTML={{
-    __html: post.excerpt || post.content?.slice(0, 120) + "..."
-  }}
-></p>
-
-                    <span className="author-post-date">
+                  {post.image && (
+                    <div className="news-thumb">
+                      <img src={formatImage(post.image)} alt={post.title} loading="lazy" />
+                    </div>
+                  )}
+                  <div className="news-body">
+                    <h3 className="news-title">{post.title}</h3>
+                    <p
+                      className="news-snippet"
+                      dangerouslySetInnerHTML={{
+                        __html: post.excerpt || post.content?.slice(0, 150) + "...",
+                      }}
+                    />
+                    <span className="post-meta">
                       {new Date(post.published_at).toLocaleDateString()}
                     </span>
                   </div>
@@ -134,3 +143,4 @@ function AuthorDetail() {
 }
 
 export default AuthorDetail;
+// Note: Ensure you have appropriate CSS in AuthorDetail.css for styling.
