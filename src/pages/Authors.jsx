@@ -19,16 +19,18 @@ function AuthorSkeleton() {
 function Authors() {
   const { data: authors = [], isLoading, isError } = useQuery({
     queryKey: ["authors"],
-    queryFn: async () => {
-      const res = await fetchAuthors();
-      // Ensure it's always an array
+    queryFn: fetchAuthors,
+    select: (res) => {
+      // Normalize the response to always return an array
       return Array.isArray(res?.data)
         ? res.data
         : Array.isArray(res?.data?.results)
         ? res.data.results
         : [];
     },
-    staleTime: 1000 * 60 * 10, // cache 10 minutes
+    staleTime: 1000 * 60 * 10, // cache for 10 minutes
+    keepPreviousData: true, // avoids UI flicker on refetch
+    placeholderData: [], // ensures skeletons render immediately
   });
 
   if (isError) return <p className="error-message">Failed to load authors.</p>;
@@ -50,14 +52,16 @@ function Authors() {
                 className="author-card-link"
               >
                 <article className="author-card">
-                  <img
-                    src={formatImage(author.profile_pic)}
-                    alt={author.name}
-                    className="author-avatar"
-                    onError={(e) => { e.target.style.display = "none"; }}
-                  />
-                  <h3>{author.name}</h3>
-                  <p>{author.bio}</p>
+                  {author.profile_pic && (
+                    <img
+                      src={formatImage(author.profile_pic)}
+                      alt={author.name ?? "Author"}
+                      className="author-avatar"
+                      onError={(e) => (e.target.style.display = "none")}
+                    />
+                  )}
+                  <h3>{author.name ?? "Unnamed Author"}</h3>
+                  <p>{author.bio ?? "No bio available."}</p>
                 </article>
               </Link>
             ))}
