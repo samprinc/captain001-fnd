@@ -1,36 +1,141 @@
+/* ===== Container ===== */
 .contact-container {
   max-width: 600px;
-  margin: 0 auto;
-  padding: 20px;
+  margin: 2rem auto;
+  margin-top: 90px;
+  padding: 2rem;
+  background-color: #fff;
+  border-radius: 12px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
+  font-family: "Inter", sans-serif;
+  color: #111;
 }
 
+/* ===== Heading ===== */
 .contact-container h2 {
+  font-size: 2rem;
+  font-weight: 700;
   text-align: center;
-  margin-bottom: 20px;
+  margin-bottom: 1.5rem;
 }
 
+/* ===== Form ===== */
 .contact-container form {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 1rem;
 }
 
+/* ===== Inputs and Textarea ===== */
 .contact-container input,
 .contact-container textarea {
-  padding: 10px;
+  padding: 0.75rem 1rem;
   border: 1px solid #ccc;
-  border-radius: 6px;
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: border-color 0.3s, box-shadow 0.3s;
 }
 
+.contact-container input:focus,
+.contact-container textarea:focus {
+  outline: none;
+  border-color: #111;
+  box-shadow: 0 0 0 2px rgba(17, 17, 17, 0.1);
+}
+
+/* ===== Submit Button ===== */
 .contact-container button {
-  padding: 12px;
-  background-color: #0b2545;
-  color: white;
+  padding: 0.75rem 1rem;
+  background-color: #111;
+  color: #fff;
   border: none;
-  border-radius: 6px;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
   cursor: pointer;
+  transition: background-color 0.3s, transform 0.2s;
 }
 
 .contact-container button:hover {
-  background-color: #103c67;
+  background-color: #333;
+  transform: translateY(-2px);
+}
+
+.contact-container input:-ms-input-placeholder {
+  font-family: "Inter", sans-serif;
+}
+.contact-container input::-webkit-input-placeholder {
+  font-family: "Inter", sans-serif;
+}
+.contact-container input::placeholder {
+  font-family: "Inter", sans-serif;
+}
+.contact-container input:-ms-input-placeholder {
+  font-family: "Inter", sans-serif;
+}
+.contact-container input::-ms-input-placeholder {
+  font-family: "Inter", sans-serif;
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 480px) {
+  .contact-container {
+    padding: 1.5rem;
+    margin: 1rem;
+    margin-top: 90px;
+  }
+
+  .contact-container h2 {
+    font-size: 1.5rem;
+  }
+}
+@media (max-width: 480px) {
+  .contact-container {
+    padding: 1.5rem;
+    margin: 1rem;
+  }
+
+  .contact-container h2 {
+    font-size: 1.5rem;
+  }
+}
+@media (max-width: 360px) {
+  .contact-container {
+    padding: 1rem;
+    margin: 0.5rem;
+  }
+
+  .contact-container h2 {
+    font-size: 1.25rem;
+  }
+}
+@media (max-width: 360px) {
+  .contact-container {
+    padding: 1rem;
+    margin: 0.5rem;
+  }
+
+  .contact-container h2 {
+    font-size: 1.25rem;
+  }
+}
+@media (max-width: 320px) {
+  .contact-container {
+    padding: 0.75rem;
+    margin: 0.5rem;
+  }
+
+  .contact-container h2 {
+    font-size: 1.1rem;
+  }
+}
+@media (max-width: 320px) {
+  .contact-container {
+    padding: 0.75rem;
+    margin: 0.5rem;
+  }
+
+  .contact-container h2 {
+    font-size: 1.1rem;
+  }
 }
