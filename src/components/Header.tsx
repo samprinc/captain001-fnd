@@ -1,6 +1,7 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 
+// Expanded to support the Command Palette and Mega Menu features
 const NAV = [
   { to: "/", label: "Home" },
   { to: "/services", label: "Services" },
@@ -27,167 +28,198 @@ export function Header() {
   const [moreOpen, setMoreOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  
   const pathname = useRouterState({ select: (s) => s.location.pathname });
 
+  // 1. Premium Scroll Physics (Optimized)
+  const onScroll = useCallback(() => setScrolled(window.scrollY > 20), []);
+  
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 8);
-    onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
-  }, []);
+  }, [onScroll]);
 
+  // 2. Route Change Cleanup
   useEffect(() => {
     setMoreOpen(false);
     setSearchOpen(false);
     setMobileOpen(false);
   }, [pathname]);
 
+  // 3. Accessibility & UX: Escape Key & Body Lock
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        setSearchOpen(false);
+        setMoreOpen(false);
+        setMobileOpen(false);
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, []);
+
+  useEffect(() => {
+    document.body.style.overflow = mobileOpen ? "hidden" : "";
+    return () => { document.body.style.overflow = ""; };
+  }, [mobileOpen]);
+
   return (
-    <header
-      className={`sticky top-0 z-50 w-full transition-all duration-300 ${
-        scrolled
-          ? "bg-white/80 backdrop-blur-md border-b border-gray-200"
-          : "bg-white border-b border-transparent"
-      }`}
-    >
-      <div className="mx-auto max-w-7xl px-5 sm:px-8">
-        <div className="flex h-20 items-center justify-between gap-6">
-          <Link to="/" className="flex items-center gap-2 group">
-            <span className="grid h-10 w-10 place-items-center rounded-2xl bg-black text-white font-black tracking-tight">
-              C
-            </span>
-            <span className="hidden sm:flex flex-col leading-none">
-              <span className="text-[15px] font-black tracking-tight text-gray-900">
+    <>
+      <header
+        className={`fixed top-0 z-50 w-full transition-all duration-500 ${
+          scrolled
+            ? "bg-white/90 backdrop-blur-xl border-b border-black/5 py-3 shadow-[0_4px_30px_rgba(0,0,0,0.03)]"
+            : "bg-transparent py-6"
+        }`}
+      >
+        <div className="mx-auto max-w-[90rem] px-6 sm:px-12">
+          <div className="flex items-center justify-between gap-8">
+            
+            {/* BRANDING */}
+            <Link to="/" className="flex flex-col gap-1 group z-50 relative">
+              <span className="text-xl font-black tracking-tighter uppercase text-black leading-none group-hover:text-neutral-600 transition-colors">
                 Captain 001
               </span>
-              <span className="text-[10px] uppercase tracking-[0.18em] text-gray-500">
-                Media Studio
+              <span className="text-[9px] uppercase tracking-[0.25em] text-neutral-500 font-medium">
+                Media • Strategy • Storytelling
               </span>
-            </span>
-          </Link>
-
-          <nav className="hidden md:flex items-center gap-1">
-            {NAV.map((n) => {
-              const active = n.to === "/" ? pathname === "/" : pathname.startsWith(n.to);
-              return (
-                <Link
-                  key={n.to}
-                  to={n.to}
-                  className={`px-4 py-2 text-sm font-medium rounded-full transition-colors ${
-                    active
-                      ? "bg-gray-900 text-white"
-                      : "text-gray-700 hover:bg-gray-100"
-                  }`}
-                >
-                  {n.label}
-                </Link>
-              );
-            })}
-            <button
-              onClick={() => {
-                setMoreOpen((v) => !v);
-                setSearchOpen(false);
-              }}
-              className={`px-4 py-2 text-sm font-medium rounded-full transition-colors flex items-center gap-2 ${
-                moreOpen ? "bg-gray-900 text-white" : "text-gray-700 hover:bg-gray-100"
-              }`}
-            >
-              More
-              <i className={`fa-solid fa-chevron-down text-[10px] transition-transform ${moreOpen ? "rotate-180" : ""}`} />
-            </button>
-          </nav>
-
-          <div className="flex items-center gap-2">
-            <button
-              aria-label="Search"
-              onClick={() => {
-                setSearchOpen((v) => !v);
-                setMoreOpen(false);
-              }}
-              className="h-11 w-11 grid place-items-center rounded-full border border-gray-200 hover:bg-gray-100 transition-colors text-gray-700"
-            >
-              <i className={`fa-solid ${searchOpen ? "fa-xmark" : "fa-magnifying-glass"} text-sm`} />
-            </button>
-            <Link
-              to="/services"
-              className="hidden sm:inline-flex items-center gap-2 px-5 h-11 rounded-full bg-gray-900 text-white text-sm font-semibold hover:bg-black transition-colors"
-            >
-              Book a Call
-              <i className="fa-solid fa-arrow-right text-[10px]" />
             </Link>
-            <button
-              aria-label="Menu"
-              onClick={() => setMobileOpen((v) => !v)}
-              className="md:hidden h-11 w-11 grid place-items-center rounded-full border border-gray-200 text-gray-700"
-            >
-              <i className={`fa-solid ${mobileOpen ? "fa-xmark" : "fa-bars"} text-sm`} />
-            </button>
+
+            {/* NAVIGATION: Tablet/Desktop */}
+            <nav className="hidden md:flex items-center gap-8">
+              {NAV.map((n) => {
+                const active = n.to === "/" ? pathname === "/" : pathname.startsWith(n.to);
+                return (
+                  <Link
+                    key={n.to}
+                    to={n.to}
+                    className={`relative py-2 text-sm font-semibold transition-colors duration-300 group ${
+                      active ? "text-black" : "text-neutral-500 hover:text-black"
+                    }`}
+                  >
+                    {n.label}
+                    <span className={`absolute bottom-0 left-0 h-[2px] bg-black transition-all duration-300 ease-out ${active ? "w-full" : "w-0 group-hover:w-full"}`} />
+                  </Link>
+                );
+              })}
+              
+              <button
+                onClick={() => { setMoreOpen(!moreOpen); setSearchOpen(false); }}
+                className={`relative py-2 text-sm font-semibold transition-colors duration-300 flex items-center gap-2 group ${
+                  moreOpen ? "text-black" : "text-neutral-500 hover:text-black"
+                }`}
+                aria-expanded={moreOpen}
+              >
+                Explore
+                <i className={`fa-solid fa-chevron-down text-[10px] transition-transform duration-300 ${moreOpen ? "rotate-180" : ""}`} />
+                <span className={`absolute bottom-0 left-0 h-[2px] bg-black transition-all duration-300 ease-out ${moreOpen ? "w-full" : "w-0 group-hover:w-full"}`} />
+              </button>
+            </nav>
+
+            {/* GLOBAL ACTIONS */}
+            <div className="flex items-center gap-2 z-50">
+              <button
+                aria-label="Search"
+                onClick={() => { setSearchOpen(!searchOpen); setMoreOpen(false); }}
+                className="h-11 w-11 grid place-items-center rounded-full text-neutral-500 hover:text-black hover:bg-neutral-100 transition-colors"
+              >
+                <i className={`fa-solid ${searchOpen ? "fa-xmark" : "fa-magnifying-glass"} text-sm`} />
+              </button>
+              
+              <Link
+                to="/services"
+                className="hidden sm:inline-flex items-center gap-2 px-6 h-11 rounded-full bg-black text-white text-xs font-bold shadow-lg shadow-black/20 hover:shadow-black/40 hover:-translate-y-0.5 transition-all duration-300 group"
+              >
+                Start Your Project
+                <i className="fa-solid fa-arrow-right text-[10px] group-hover:translate-x-1 transition-transform" />
+              </Link>
+
+              {/* Mobile Hamburger - Optimized Hit Area */}
+              <button
+                aria-label="Toggle Menu"
+                aria-expanded={mobileOpen}
+                onClick={() => setMobileOpen(!mobileOpen)}
+                className="md:hidden h-11 w-11 grid place-items-center text-black"
+              >
+                <div className="w-5 h-4 flex flex-col justify-between overflow-hidden">
+                  <span className={`w-full h-[2px] bg-black transition-all duration-300 ${mobileOpen ? "translate-y-[7px] rotate-45" : ""}`} />
+                  <span className={`w-full h-[2px] bg-black transition-all duration-300 ${mobileOpen ? "opacity-0 translate-x-4" : ""}`} />
+                  <span className={`w-full h-[2px] bg-black transition-all duration-300 ${mobileOpen ? "-translate-y-[7px] -rotate-45" : ""}`} />
+                </div>
+              </button>
+            </div>
           </div>
         </div>
 
+        {/* Search Palette */}
         {searchOpen && (
-          <div className="pb-6">
-            <div className="flex items-center gap-3 rounded-3xl border border-gray-200 bg-gray-50 px-5 py-4">
-              <i className="fa-solid fa-magnifying-glass text-gray-500" />
-              <input
-                autoFocus
-                placeholder="Search the studio — projects, essays, press…"
-                className="flex-1 bg-transparent outline-none text-base text-gray-900 placeholder:text-gray-500"
-              />
-              <kbd className="hidden sm:inline-flex text-[10px] uppercase tracking-widest text-gray-500 border border-gray-300 rounded px-2 py-1">
-                Esc
-              </kbd>
+          <div className="absolute left-0 w-full top-full pt-4 px-6 animate-in slide-in-from-top-2 fade-in duration-300">
+            <div className="mx-auto max-w-3xl rounded-2xl bg-white shadow-2xl border border-neutral-100 overflow-hidden">
+              <div className="flex items-center gap-4 px-6 py-5 border-b border-neutral-100">
+                <i className="fa-solid fa-magnifying-glass text-neutral-400" />
+                <input
+                  autoFocus
+                  placeholder="Search projects, insights, capabilities..."
+                  className="flex-1 bg-transparent outline-none text-base sm:text-lg font-medium text-black placeholder:text-neutral-400"
+                />
+              </div>
             </div>
           </div>
         )}
 
+        {/* Mega Menu */}
         {moreOpen && (
-          <div className="hidden md:block pb-8">
-            <div className="rounded-3xl bg-gray-50 border border-gray-200 p-8 grid grid-cols-3 gap-8">
-              {MEGA.map((col) => (
-                <div key={col.title}>
-                  <div className="text-[10px] uppercase tracking-[0.2em] text-gray-500 mb-4">
-                    {col.title}
-                  </div>
-                  <ul className="space-y-3">
-                    {col.items.map((it) => (
-                      <li key={it}>
-                        <a
-                          href="#"
-                          className="text-[15px] font-medium text-gray-900 hover:text-gray-500 transition-colors flex items-center gap-2 group"
-                        >
-                          {it}
-                          <i className="fa-solid fa-arrow-right text-[10px] opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-all" />
-                        </a>
-                      </li>
-                    ))}
-                  </ul>
+          <div className="hidden md:block absolute left-0 w-full top-full pt-4 animate-in slide-in-from-top-2 fade-in duration-300">
+            <div className="mx-auto max-w-[90rem] px-12">
+              <div className="rounded-2xl bg-white shadow-2xl border border-neutral-100 p-8 grid grid-cols-12 gap-8">
+                <div className="col-span-4 bg-neutral-50 rounded-xl p-8">
+                  <div className="w-10 h-10 bg-black text-white rounded-full flex items-center justify-center font-black text-lg mb-6">C</div>
+                  <h3 className="text-xl font-black tracking-tight mb-2">We build brands that move culture.</h3>
+                  <p className="text-sm text-neutral-500">Nairobi-based studio, global impact. We bridge the gap between creative strategy and commercial performance.</p>
                 </div>
-              ))}
+                <div className="col-span-8 grid grid-cols-3 gap-8">
+                  {MEGA.map((col) => (
+                    <div key={col.title}>
+                      <div className="text-[10px] font-bold uppercase tracking-widest text-neutral-400 mb-6">{col.title}</div>
+                      <ul className="space-y-4">
+                        {col.items.map((it) => (
+                          <li key={it}>
+                            <a href="#" className="text-sm font-semibold text-neutral-600 hover:text-[#ff6600] transition-colors">{it}</a>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  ))}
+                </div>
+              </div>
             </div>
           </div>
         )}
+      </header>
 
-        {mobileOpen && (
-          <div className="md:hidden pb-6 space-y-2">
+      {/* Mobile Takeover */}
+      {mobileOpen && (
+        <div className="md:hidden fixed inset-0 z-40 bg-white pt-28 pb-12 px-6 flex flex-col justify-between animate-in fade-in duration-300">
+          <div className="flex flex-col gap-8">
             {NAV.map((n) => (
               <Link
                 key={n.to}
                 to={n.to}
-                className="block px-5 py-4 rounded-2xl bg-gray-50 text-gray-900 font-semibold"
+                className="text-4xl font-black tracking-tighter text-black hover:text-[#ff6600] transition-colors"
               >
                 {n.label}
               </Link>
             ))}
-            <Link
-              to="/services"
-              className="block text-center px-5 py-4 rounded-2xl bg-gray-900 text-white font-semibold"
-            >
-              Book a Call
+          </div>
+          
+          <div className="flex flex-col gap-6">
+            <Link to="/services" className="flex items-center justify-center gap-2 w-full py-5 rounded-full bg-black text-white text-base font-bold min-h-[44px]">
+              Start Your Project
             </Link>
           </div>
-        )}
-      </div>
-    </header>
+        </div>
+      )}
+    </>
   );
 }

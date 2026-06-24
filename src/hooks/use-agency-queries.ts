@@ -1,37 +1,41 @@
-import { useQuery } from "@tanstack/react-query";
-import { posts, services, type Post, type Service } from "@/lib/agency-data";
+// src/hooks/use-agency-queries.ts
+import { useQuery, keepPreviousData } from "@tanstack/react-query";
+import { 
+  fetchServices, 
+  fetchPosts, 
+  fetchGallery, 
+  fetchTestimonials, 
+  fetchPartners, 
+  fetchPost 
+} from "../lib/api";
 
-const delay = (ms: number) => new Promise((r) => setTimeout(r, ms));
+export const useServicesQuery = () => 
+  useQuery({ queryKey: ["services"], queryFn: fetchServices });
 
-export function usePostsQuery() {
-  return useQuery<Post[]>({
-    queryKey: ["posts"],
-    queryFn: async () => {
-      await delay(120);
-      return posts;
-    },
-    staleTime: 60_000,
+// ==== UPDATED: Now handles Pagination, Search, and Filtering ====
+export const usePostsQuery = (page: number = 1, search: string = "", category: string = "All") => 
+  useQuery({ 
+    // Adding them to the queryKey means if any of them change, React refetches automatically
+    queryKey: ["posts", page, search, category], 
+    queryFn: () => fetchPosts(page, search, category),
+    // This stops the screen from flashing white when switching pages
+    placeholderData: keepPreviousData, 
   });
-}
 
-export function useServicesQuery() {
-  return useQuery<Service[]>({
-    queryKey: ["services"],
-    queryFn: async () => {
-      await delay(80);
-      return services;
-    },
-    staleTime: 60_000,
-  });
-}
+export const useGalleryQuery = () => 
+  useQuery({ queryKey: ["gallery"], queryFn: fetchGallery });
 
-export function usePostQuery(id: string) {
-  return useQuery<Post | undefined>({
-    queryKey: ["posts", id],
-    queryFn: async () => {
-      await delay(80);
-      return posts.find((p) => p.id === id);
-    },
-    staleTime: 60_000,
+export const useTestimonialsQuery = () => 
+  useQuery({ queryKey: ["testimonials"], queryFn: fetchTestimonials });
+
+// ==== NEW: For the Homepage Marquee ====
+export const usePartnersQuery = () => 
+  useQuery({ queryKey: ["partners"], queryFn: fetchPartners });
+
+// ==== NEW: For the Individual Article Page ====
+export const usePostQuery = (slug: string) => 
+  useQuery({ 
+    queryKey: ["post", slug], 
+    queryFn: () => fetchPost(slug),
+    enabled: !!slug 
   });
-}

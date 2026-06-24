@@ -1,58 +1,139 @@
 import { Link } from "@tanstack/react-router";
+import { useState, useEffect } from "react";
+import { subscribeNewsletter } from "../lib/api"; // Adjust import path if needed
+
+// Helper for animated metrics
+function AnimatedCounter({ end, suffix = "" }: { end: number; suffix?: string }) {
+  const [count, setCount] = useState(0);
+  useEffect(() => {
+    let start = 0;
+    const duration = 2000;
+    const increment = end / (duration / 16);
+    const timer = setInterval(() => {
+      start += increment;
+      if (start >= end) {
+        clearInterval(timer);
+        setCount(end);
+      } else {
+        setCount(Math.floor(start));
+      }
+    }, 16);
+    return () => clearInterval(timer);
+  }, [end]);
+  return <>{count}{suffix}</>;
+}
 
 export function Footer() {
+  const [email, setEmail] = useState("");
+  const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
+  const [message, setMessage] = useState("");
+
+  const handleSubscribe = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!email) return;
+
+    setStatus("loading");
+    setMessage("");
+
+    try {
+      await subscribeNewsletter(email);
+      setStatus("success");
+      setMessage("Welcome to the list.");
+      setEmail("");
+    } catch (error: any) {
+      setStatus("error");
+      if (error.status === 400 && error.data?.email) {
+        setMessage("You're already on the list.");
+      } else {
+        setMessage("Something went wrong. Try again.");
+      }
+    }
+  };
+
   return (
-    <footer className="bg-black text-gray-300">
-      <div className="mx-auto max-w-7xl px-5 sm:px-8 py-20">
-        <div className="grid md:grid-cols-12 gap-12">
-          <div className="md:col-span-5">
-            <div className="flex items-center gap-2 mb-6">
-              <span className="grid h-10 w-10 place-items-center rounded-2xl bg-white text-black font-black">
-                C
-              </span>
-              <span className="text-white font-black tracking-tight">Captain 001 Media</span>
-            </div>
-            <p className="text-gray-400 text-lg leading-relaxed max-w-md">
-              A creative media studio building cinematic brands, editorial press, and the
-              quiet kind of work that outlasts the feed.
-            </p>
-            <div className="flex gap-3 mt-8">
-              {["instagram", "x-twitter", "linkedin", "youtube"].map((s) => (
-                <a
-                  key={s}
-                  href="#"
-                  className="h-11 w-11 grid place-items-center rounded-full border border-gray-800 hover:bg-white hover:text-black transition-colors"
-                >
-                  <i className={`fa-brands fa-${s} text-sm`} />
-                </a>
-              ))}
-            </div>
+    <footer className="bg-black text-white font-sans selection:bg-[#ff6600] selection:text-white border-t border-white/10">
+      
+      <div className="mx-auto max-w-[90rem] px-6 py-24 grid md:grid-cols-2 lg:grid-cols-4 gap-16">
+        
+        {/* Brand */}
+        <div className="space-y-6">
+          <div className="flex items-center gap-3">
+            <span className="grid h-10 w-10 place-items-center rounded-lg bg-[#ff6600] text-white font-black">C</span>
+            <span className="text-lg font-black tracking-tight">Captain 001.</span>
           </div>
-
-          <div className="md:col-span-3">
-            <div className="text-[10px] uppercase tracking-[0.2em] text-gray-500 mb-4">Studio</div>
-            <ul className="space-y-3">
-              <li><Link to="/" className="hover:text-white">Home</Link></li>
-              <li><Link to="/services" className="hover:text-white">Services</Link></li>
-              <li><Link to="/insights" className="hover:text-white">Insights</Link></li>
-              <li><a href="#" className="hover:text-white">Press Kit</a></li>
-            </ul>
-          </div>
-
-          <div className="md:col-span-4">
-            <div className="text-[10px] uppercase tracking-[0.2em] text-gray-500 mb-4">Contact</div>
-            <p className="text-white font-semibold text-lg">studio@captain001.media</p>
-            <p className="text-gray-400 mt-2">Nairobi, Kenya — Worldwide commissions</p>
-          </div>
+          <p className="text-neutral-400 text-sm leading-relaxed">
+            Captain 001 Media helps ambitious organizations capture attention, build authority, and dominate conversations through cinematic production and strategic growth systems.
+          </p>
         </div>
 
-        <div className="mt-16 pt-8 border-t border-gray-900 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 text-sm text-gray-500">
-          <div>© {new Date().getFullYear()} Captain 001 Media. All rights reserved.</div>
-          <div className="flex gap-6">
-            <a href="#" className="hover:text-white">Privacy</a>
-            <a href="#" className="hover:text-white">Terms</a>
-            <a href="#" className="hover:text-white">Colophon</a>
-          </div>
+        {/* Company Nav */}
+        <div>
+          <h3 className="text-[10px] uppercase tracking-[0.25em] text-neutral-500 font-bold mb-8">Company</h3>
+          <ul className="space-y-4 text-sm font-medium text-neutral-300">
+            <li><Link to="/" className="hover:text-[#ff6600] transition-colors">Home</Link></li>
+            <li><Link to="/about" className="hover:text-[#ff6600] transition-colors">About Us</Link></li>
+            <li><Link to="/gallery" className="hover:text-[#ff6600] transition-colors">Portfolio</Link></li>
+            <li><Link to="/insights" className="hover:text-[#ff6600] transition-colors">Insights</Link></li>
+          </ul>
+        </div>
+
+        {/* Services Nav - FIXED TO USE HASHES */}
+        <div>
+          <h3 className="text-[10px] uppercase tracking-[0.25em] text-neutral-500 font-bold mb-8">Capabilities</h3>
+          <ul className="space-y-4 text-sm font-medium text-neutral-300">
+            <li><Link to="/services" className="hover:text-[#ff6600] transition-colors">All Services</Link></li>
+            {/* Using the hash prop to scroll to the specific ID on the services page */}
+            <li><Link to="/services" hash="service-production" className="hover:text-[#ff6600] transition-colors">Cinematic Production</Link></li>
+            <li><Link to="/services" hash="service-branding" className="hover:text-[#ff6600] transition-colors">Branding & Print</Link></li>
+            <li><Link to="/services" hash="service-digital" className="hover:text-[#ff6600] transition-colors">Digital & Consultancy</Link></li>
+          </ul>
+        </div>
+
+        {/* Contact/Newsletter */}
+        <div className="space-y-6">
+          <h3 className="text-[10px] uppercase tracking-[0.25em] text-neutral-500 font-bold mb-8">Get In Touch</h3>
+          <a href="mailto:studio@captain001.media" className="block text-sm font-semibold hover:text-[#ff6600]">studio@captain001.media</a>
+          <div className="text-sm text-neutral-400">Nairobi, Kenya — Global Commissions</div>
+          
+          <form className="relative mt-4" onSubmit={handleSubscribe}>
+            <input 
+              type="email" 
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              disabled={status === "loading" || status === "success"}
+              placeholder="Subscribe to field notes" 
+              className="w-full bg-neutral-900 border border-white/10 rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-[#ff6600] disabled:opacity-50" 
+              required
+            />
+            <button 
+              type="submit"
+              disabled={status === "loading" || status === "success"}
+              className="absolute right-2 top-2 bg-[#ff6600] text-white px-4 py-1.5 rounded text-[10px] font-bold uppercase tracking-widest hover:bg-white hover:text-black disabled:opacity-50 transition-colors"
+            >
+              {status === "loading" ? "..." : status === "success" ? "Done" : "Join"}
+            </button>
+          </form>
+          {message && (
+            <p className={`text-xs ${status === "success" ? "text-green-500" : "text-[#ff6600]"}`}>
+              {message}
+            </p>
+          )}
+        </div>
+      </div>
+
+      {/* ==== 4. LEGAL & SOCIAL ==== */}
+      <div className="mx-auto max-w-[90rem] px-6 py-8 border-t border-white/5 flex flex-col md:flex-row items-center justify-between gap-8 text-[11px] font-bold text-neutral-500 uppercase tracking-widest">
+        <div>© {new Date().getFullYear()} Captain 001 Media. Built in Nairobi.</div>
+        
+        <div className="flex gap-6 items-center">
+          {["instagram", "linkedin", "x-twitter", "youtube"].map((s) => (
+            <a key={s} href="#" className="hover:text-[#ff6600] transition-colors">
+              <i className={`fa-brands fa-${s} text-lg`} />
+            </a>
+          ))}
+          <span className="h-4 w-[1px] bg-neutral-800 mx-2" />
+          <Link to="/privacy" className="hover:text-white transition-colors">Privacy</Link>
+          <Link to="/terms" className="hover:text-white transition-colors">Terms</Link>
         </div>
       </div>
     </footer>
