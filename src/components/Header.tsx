@@ -8,9 +8,16 @@ const NAV = [
   { to: "/insights", label: "Insights" },
 ];
 
-// Mega Menu Configuration
-// Notice I added 'hash' for specific section jumps, and 'isScroll' for the Subscribe button
-const MEGA = [
+// 1. Add this interface
+interface MegaItem {
+  label: string;
+  to: string;
+  hash?: string;
+  isScroll?: boolean;
+}
+
+// 2. Update the MEGA array to use the interface
+const MEGA: { title: string; items: MegaItem[] }[] = [
   {
     title: "Studio",
     items: [
@@ -35,7 +42,7 @@ const MEGA = [
       { label: "Latest Insights", to: "/insights" },
       { label: "The Magazine", to: "/insights" },
       { label: "Field Notes", to: "/insights" },
-      { label: "Subscribe", to: "", isScroll: true }, // This will scroll to footer
+      { label: "Subscribe", to: "", isScroll: true },
     ],
   },
 ];
@@ -47,8 +54,6 @@ export function Header() {
   const [mobileOpen, setMobileOpen] = useState(false);
   
   const pathname = useRouterState({ select: (s) => s.location.pathname });
-  
-  // Create a reference to the header to detect outside clicks
   const headerRef = useRef<HTMLElement>(null);
 
   // 1. Premium Scroll Physics (Optimized)
@@ -77,7 +82,6 @@ export function Header() {
     };
 
     const handleClickOutside = (e: MouseEvent) => {
-      // If the menu is open, and the click happened OUTSIDE the header element, close everything
       if (headerRef.current && !headerRef.current.contains(e.target as Node)) {
         setMoreOpen(false);
         setSearchOpen(false);
@@ -102,16 +106,16 @@ export function Header() {
   // Helper to scroll to footer for the Subscribe button
   const scrollToFooter = () => {
     setMoreOpen(false);
+    setMobileOpen(false); // Close mobile menu too
     window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
   };
 
   return (
     <>
-      {/* Attach the ref right here to the header element */}
       <header
         ref={headerRef}
         className={`fixed top-0 z-50 w-full transition-all duration-500 ${
-          scrolled || moreOpen || searchOpen
+          scrolled || moreOpen || searchOpen || mobileOpen
             ? "bg-white/95 backdrop-blur-xl border-b border-black/5 py-3 shadow-[0_4px_30px_rgba(0,0,0,0.03)]"
             : "bg-transparent py-6"
         }`}
@@ -120,11 +124,11 @@ export function Header() {
           <div className="flex items-center justify-between gap-8">
             
             {/* BRANDING */}
-            <Link to="/" className="flex flex-col gap-1 group z-50 relative">
+            <Link to="/" className="flex flex-col gap-1 group z-50 relative" onClick={() => setMobileOpen(false)}>
               <span className="text-xl font-black tracking-tighter uppercase text-black leading-none group-hover:text-neutral-600 transition-colors">
                 Captain 001
               </span>
-              <span className="text-[9px] uppercase tracking-[0.25em] text-neutral-500 font-medium">
+              <span className="text-[9px] uppercase tracking-[0.25em] text-neutral-500 font-medium hidden sm:block">
                 Media • Strategy • Storytelling
               </span>
             </Link>
@@ -164,7 +168,7 @@ export function Header() {
             <div className="flex items-center gap-2 z-50">
               <button
                 aria-label="Search"
-                onClick={() => { setSearchOpen(!searchOpen); setMoreOpen(false); }}
+                onClick={() => { setSearchOpen(!searchOpen); setMoreOpen(false); setMobileOpen(false); }}
                 className="h-11 w-11 grid place-items-center rounded-full text-neutral-500 hover:text-black hover:bg-neutral-100 transition-colors"
               >
                 <i className={`fa-solid ${searchOpen ? "fa-xmark" : "fa-magnifying-glass"} text-sm`} />
@@ -182,7 +186,7 @@ export function Header() {
               <button
                 aria-label="Toggle Menu"
                 aria-expanded={mobileOpen}
-                onClick={() => setMobileOpen(!mobileOpen)}
+                onClick={() => { setMobileOpen(!mobileOpen); setSearchOpen(false); }}
                 className="md:hidden h-11 w-11 grid place-items-center text-black"
               >
                 <div className="w-5 h-4 flex flex-col justify-between overflow-hidden">
@@ -211,7 +215,7 @@ export function Header() {
           </div>
         )}
 
-        {/* Mega Menu */}
+        {/* Mega Menu (Desktop Only) */}
         {moreOpen && (
           <div className="hidden md:block absolute left-0 w-full top-full pt-4 animate-in slide-in-from-top-2 fade-in duration-300 shadow-2xl pb-6">
             <div className="mx-auto max-w-[90rem] px-12">
@@ -228,7 +232,6 @@ export function Header() {
                       <ul className="space-y-4">
                         {col.items.map((item) => (
                           <li key={item.label}>
-                            {/* If it's a scroll button (Subscribe), render a button instead of a Link */}
                             {item.isScroll ? (
                               <button 
                                 onClick={scrollToFooter}
@@ -239,8 +242,8 @@ export function Header() {
                             ) : (
                               <Link 
                                 to={item.to} 
-                                hash={item.hash} // Adds #section to the URL if provided
-                                onClick={() => setMoreOpen(false)} // Closes menu when clicked
+                                hash={item.hash}
+                                onClick={() => setMoreOpen(false)}
                                 className="text-sm font-semibold text-neutral-600 hover:text-[#ff6600] transition-colors"
                               >
                                 {item.label}
@@ -258,29 +261,72 @@ export function Header() {
         )}
       </header>
 
-      {/* Mobile Takeover */}
+      {/* Mobile Takeover (Responsive Redesign) */}
       {mobileOpen && (
-        <div className="md:hidden fixed inset-0 z-40 bg-white pt-28 pb-12 px-6 flex flex-col justify-between animate-in fade-in duration-300">
-          <div className="flex flex-col gap-8">
-            {NAV.map((n) => (
-              <Link
-                key={n.to}
-                to={n.to}
-                onClick={() => setMobileOpen(false)}
-                className="text-4xl font-black tracking-tighter text-black hover:text-[#ff6600] transition-colors"
-              >
-                {n.label}
-              </Link>
-            ))}
+        <div className="md:hidden fixed inset-0 z-40 bg-white pt-24 pb-8 flex flex-col animate-in fade-in duration-300 overflow-y-auto">
+          <div className="px-6 flex-1 flex flex-col gap-8 pb-12">
+            
+            {/* Main Links */}
+            <div className="flex flex-col gap-6 pt-4">
+              {NAV.map((n) => (
+                <Link
+                  key={n.to}
+                  to={n.to}
+                  onClick={() => setMobileOpen(false)}
+                  className="text-4xl font-black tracking-tighter text-black hover:text-[#ff6600] transition-colors"
+                >
+                  {n.label}
+                </Link>
+              ))}
+            </div>
+
+            {/* Divider */}
+            <div className="h-px w-full bg-neutral-100" />
+
+            {/* Explore Section (Mobile Mega Menu) */}
+            <div className="flex flex-col gap-8">
+              {MEGA.map((col) => (
+                <div key={col.title} className="flex flex-col gap-4">
+                  <div className="text-[10px] font-bold uppercase tracking-widest text-[#ff6600]">
+                    {col.title}
+                  </div>
+                  <ul className="space-y-4 pl-2 border-l border-neutral-100">
+                    {col.items.map((item) => (
+                      <li key={item.label}>
+                        {item.isScroll ? (
+                          <button 
+                            onClick={scrollToFooter}
+                            className="text-xl font-bold tracking-tight text-neutral-600 hover:text-black"
+                          >
+                            {item.label}
+                          </button>
+                        ) : (
+                          <Link 
+                            to={item.to} 
+                            hash={item.hash}
+                            onClick={() => setMobileOpen(false)}
+                            className="text-xl font-bold tracking-tight text-neutral-600 hover:text-black"
+                          >
+                            {item.label}
+                          </Link>
+                        )}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ))}
+            </div>
           </div>
           
-          <div className="flex flex-col gap-6">
+          {/* Sticky CTA Bottom */}
+          <div className="px-6 pt-6 bg-white/95 backdrop-blur-md border-t border-neutral-100 mt-auto shrink-0 sticky bottom-0">
             <Link 
               to="/services" 
               onClick={() => setMobileOpen(false)}
-              className="flex items-center justify-center gap-2 w-full py-5 rounded-full bg-black text-white text-base font-bold min-h-[44px]"
+              className="flex items-center justify-center gap-2 w-full py-4 rounded-full bg-black text-white text-base font-bold"
             >
               Start Your Project
+              <i className="fa-solid fa-arrow-right text-xs" />
             </Link>
           </div>
         </div>
