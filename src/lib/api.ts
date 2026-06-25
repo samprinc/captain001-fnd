@@ -32,11 +32,24 @@ const unwrap = (data: any) => (data.results ? data.results : data);
 // ==== FETCH FUNCTIONS ====
 
 export async function fetchServices(): Promise<Service[]> {
-  const res = await fetch(`${API_URL}/services/`);
-  if (!res.ok) throw new Error("Failed to fetch services");
-  return unwrap(await res.json());
+  try {
+    console.log("SSR WIRETAP: Attempting to fetch from", `${API_URL}/services/`);
+    
+    const res = await fetch(`${API_URL}/services/`);
+    console.log("SSR WIRETAP: Render responded with status:", res.status);
+    
+    if (!res.ok) {
+      const errorText = await res.text();
+      console.error("SSR CRASH: Django rejected the request! Reason:", errorText);
+      throw new Error("Failed to fetch services");
+    }
+    
+    return unwrap(await res.json());
+  } catch (error) {
+    console.error("SSR CRASH: Network or execution failure:", error);
+    throw error;
+  }
 }
-
 export async function fetchPosts(
   page: number = 1,
   search: string = "",
