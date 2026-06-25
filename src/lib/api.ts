@@ -1,6 +1,7 @@
 import { Service, Post, PortfolioImage, Testimonial, Partner } from "./agency-data";
 
-const API_URL = "http://localhost:8000/api";
+// Pull the URL from the .env file, fallback to localhost if missing
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:8000/api";
 
 // ==== INTERFACES ====
 export interface PaginatedPosts {
