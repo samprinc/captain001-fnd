@@ -38,7 +38,7 @@ const faqs = [
   { q: "Can you work with NGOs?", a: "Absolutely. We have extensive experience translating complex NGO impact data into compelling visual narratives." }
 ];
 
-export function BookPage() {
+function BookPage() {
   const router = useRouter();
   const [step, setStep] = useState(1);
   const [isSubmitting, setIsSubmitting] = useState(false);
