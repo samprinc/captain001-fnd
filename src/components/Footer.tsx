@@ -92,8 +92,8 @@ export function Footer() {
         {/* Contact/Newsletter */}
         <div className="space-y-6">
           <h3 className="text-[10px] uppercase tracking-[0.25em] text-neutral-500 font-bold mb-8">Get In Touch</h3>
-          <a href="mailto:studio@captain001.media" className="block text-sm font-semibold hover:text-[#ff6600]">studio@captain001.media</a>
-          <div className="text-sm text-neutral-400">Nairobi, Kenya — Global Commissions</div>
+          <a href="mailto:stephenndemo55@gmail.com" className="block text-sm font-semibold hover:text-[#ff6600] break-all">stephenndemo55@gmail.com</a>
+          <div className="text-sm text-neutral-400">Nairobi, Kenya  Global Commissions</div>
           
           <form className="relative mt-4" onSubmit={handleSubscribe}>
             <input 
@@ -121,16 +121,22 @@ export function Footer() {
         </div>
       </div>
 
-      {/* ==== 4. LEGAL & SOCIAL ==== */}
+      {/* LEGAL & SOCIAL */}
       <div className="mx-auto max-w-[90rem] px-6 py-8 border-t border-white/5 flex flex-col md:flex-row items-center justify-between gap-8 text-[11px] font-bold text-neutral-500 uppercase tracking-widest">
         <div>© {new Date().getFullYear()} Captain 001 Media. Built in Nairobi.</div>
         
         <div className="flex gap-6 items-center">
-          {["instagram", "linkedin", "x-twitter", "youtube"].map((s) => (
-            <a key={s} href="#" className="hover:text-[#ff6600] transition-colors">
-              <i className={`fa-brands fa-${s} text-lg`} />
-            </a>
-          ))}
+          {/* Real profiles from Stephen's Brand */}
+          <a href="https://www.facebook.com/profile.php?id=100063722293969" target="_blank" rel="noopener noreferrer" className="hover:text-[#ff6600] transition-colors">
+            <i className="fa-brands fa-facebook-f text-lg" />
+          </a>
+          <a href="https://www.tiktok.com/@ndemojrlive" target="_blank" rel="noopener noreferrer" className="hover:text-[#ff6600] transition-colors">
+            <i className="fa-brands fa-tiktok text-lg" />
+          </a>
+          <a href="https://www.youtube.com/@ndemojrlive1638" target="_blank" rel="noopener noreferrer" className="hover:text-[#ff6600] transition-colors">
+            <i className="fa-brands fa-youtube text-lg" />
+          </a>
+          
           <span className="h-4 w-[1px] bg-neutral-800 mx-2" />
           <Link to="/privacy" className="hover:text-white transition-colors">Privacy</Link>
           <Link to="/terms" className="hover:text-white transition-colors">Terms</Link>

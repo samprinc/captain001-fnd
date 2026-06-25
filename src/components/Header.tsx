@@ -1,25 +1,42 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 
-// Expanded to support the Command Palette and Mega Menu features
+// Main Nav Links
 const NAV = [
   { to: "/", label: "Home" },
   { to: "/services", label: "Services" },
   { to: "/insights", label: "Insights" },
 ];
 
+// Mega Menu Configuration
+// Notice I added 'hash' for specific section jumps, and 'isScroll' for the Subscribe button
 const MEGA = [
   {
     title: "Studio",
-    items: ["About Captain 001", "Founder — Stephen Ndemo Jr.", "Press Kit", "Careers"],
+    items: [
+      { label: "About Captain 001", to: "/about" },
+      { label: "Founder — Stephen Ndemo Jr.", to: "/about" },
+      { label: "Our Portfolio", to: "/gallery" },
+      { label: "Contact Us", to: "/about" },
+    ],
   },
   {
     title: "Capabilities",
-    items: ["Cinematic Production", "Brand Architecture", "Digital PR", "Editorial Publishing"],
+    items: [
+      { label: "Cinematic Production", to: "/services", hash: "service-production" },
+      { label: "Branding & Print", to: "/services", hash: "service-branding" },
+      { label: "Digital & Consultancy", to: "/services", hash: "service-digital" },
+      { label: "View All Services", to: "/services" },
+    ],
   },
   {
     title: "Editorial",
-    items: ["The Magazine", "Newsletter", "Field Notes", "Subscribe"],
+    items: [
+      { label: "Latest Insights", to: "/insights" },
+      { label: "The Magazine", to: "/insights" },
+      { label: "Field Notes", to: "/insights" },
+      { label: "Subscribe", to: "", isScroll: true }, // This will scroll to footer
+    ],
   },
 ];
 
@@ -30,6 +47,9 @@ export function Header() {
   const [mobileOpen, setMobileOpen] = useState(false);
   
   const pathname = useRouterState({ select: (s) => s.location.pathname });
+  
+  // Create a reference to the header to detect outside clicks
+  const headerRef = useRef<HTMLElement>(null);
 
   // 1. Premium Scroll Physics (Optimized)
   const onScroll = useCallback(() => setScrolled(window.scrollY > 20), []);
@@ -46,7 +66,7 @@ export function Header() {
     setMobileOpen(false);
   }, [pathname]);
 
-  // 3. Accessibility & UX: Escape Key & Body Lock
+  // 3. Accessibility & UX: Escape Key & Click Outside
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
@@ -55,21 +75,44 @@ export function Header() {
         setMobileOpen(false);
       }
     };
+
+    const handleClickOutside = (e: MouseEvent) => {
+      // If the menu is open, and the click happened OUTSIDE the header element, close everything
+      if (headerRef.current && !headerRef.current.contains(e.target as Node)) {
+        setMoreOpen(false);
+        setSearchOpen(false);
+      }
+    };
+
     window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
+    document.addEventListener("mousedown", handleClickOutside);
+    
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
   }, []);
 
+  // Prevent body scroll when mobile menu is open
   useEffect(() => {
     document.body.style.overflow = mobileOpen ? "hidden" : "";
     return () => { document.body.style.overflow = ""; };
   }, [mobileOpen]);
 
+  // Helper to scroll to footer for the Subscribe button
+  const scrollToFooter = () => {
+    setMoreOpen(false);
+    window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
+  };
+
   return (
     <>
+      {/* Attach the ref right here to the header element */}
       <header
+        ref={headerRef}
         className={`fixed top-0 z-50 w-full transition-all duration-500 ${
-          scrolled
-            ? "bg-white/90 backdrop-blur-xl border-b border-black/5 py-3 shadow-[0_4px_30px_rgba(0,0,0,0.03)]"
+          scrolled || moreOpen || searchOpen
+            ? "bg-white/95 backdrop-blur-xl border-b border-black/5 py-3 shadow-[0_4px_30px_rgba(0,0,0,0.03)]"
             : "bg-transparent py-6"
         }`}
       >
@@ -135,7 +178,7 @@ export function Header() {
                 <i className="fa-solid fa-arrow-right text-[10px] group-hover:translate-x-1 transition-transform" />
               </Link>
 
-              {/* Mobile Hamburger - Optimized Hit Area */}
+              {/* Mobile Hamburger */}
               <button
                 aria-label="Toggle Menu"
                 aria-expanded={mobileOpen}
@@ -170,9 +213,9 @@ export function Header() {
 
         {/* Mega Menu */}
         {moreOpen && (
-          <div className="hidden md:block absolute left-0 w-full top-full pt-4 animate-in slide-in-from-top-2 fade-in duration-300">
+          <div className="hidden md:block absolute left-0 w-full top-full pt-4 animate-in slide-in-from-top-2 fade-in duration-300 shadow-2xl pb-6">
             <div className="mx-auto max-w-[90rem] px-12">
-              <div className="rounded-2xl bg-white shadow-2xl border border-neutral-100 p-8 grid grid-cols-12 gap-8">
+              <div className="rounded-2xl bg-white border border-neutral-100 p-8 grid grid-cols-12 gap-8 shadow-xl">
                 <div className="col-span-4 bg-neutral-50 rounded-xl p-8">
                   <div className="w-10 h-10 bg-black text-white rounded-full flex items-center justify-center font-black text-lg mb-6">C</div>
                   <h3 className="text-xl font-black tracking-tight mb-2">We build brands that move culture.</h3>
@@ -183,9 +226,26 @@ export function Header() {
                     <div key={col.title}>
                       <div className="text-[10px] font-bold uppercase tracking-widest text-neutral-400 mb-6">{col.title}</div>
                       <ul className="space-y-4">
-                        {col.items.map((it) => (
-                          <li key={it}>
-                            <a href="#" className="text-sm font-semibold text-neutral-600 hover:text-[#ff6600] transition-colors">{it}</a>
+                        {col.items.map((item) => (
+                          <li key={item.label}>
+                            {/* If it's a scroll button (Subscribe), render a button instead of a Link */}
+                            {item.isScroll ? (
+                              <button 
+                                onClick={scrollToFooter}
+                                className="text-sm font-semibold text-neutral-600 hover:text-[#ff6600] transition-colors"
+                              >
+                                {item.label}
+                              </button>
+                            ) : (
+                              <Link 
+                                to={item.to} 
+                                hash={item.hash} // Adds #section to the URL if provided
+                                onClick={() => setMoreOpen(false)} // Closes menu when clicked
+                                className="text-sm font-semibold text-neutral-600 hover:text-[#ff6600] transition-colors"
+                              >
+                                {item.label}
+                              </Link>
+                            )}
                           </li>
                         ))}
                       </ul>
@@ -206,6 +266,7 @@ export function Header() {
               <Link
                 key={n.to}
                 to={n.to}
+                onClick={() => setMobileOpen(false)}
                 className="text-4xl font-black tracking-tighter text-black hover:text-[#ff6600] transition-colors"
               >
                 {n.label}
@@ -214,7 +275,11 @@ export function Header() {
           </div>
           
           <div className="flex flex-col gap-6">
-            <Link to="/services" className="flex items-center justify-center gap-2 w-full py-5 rounded-full bg-black text-white text-base font-bold min-h-[44px]">
+            <Link 
+              to="/services" 
+              onClick={() => setMobileOpen(false)}
+              className="flex items-center justify-center gap-2 w-full py-5 rounded-full bg-black text-white text-base font-bold min-h-[44px]"
+            >
               Start Your Project
             </Link>
           </div>
