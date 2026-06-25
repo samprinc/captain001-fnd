@@ -1,8 +1,8 @@
 import { Service, Post, PortfolioImage, Testimonial, Partner } from "./agency-data";
 
 // Pull the URL from the .env file, fallback to localhost if missing
-const API_URL = import.meta.env.VITE_API_URL || "https://captain001-bnd-z8f2.onrender.com/api";
-
+// Pure hardcode to bypass Vercel settings completely
+const API_URL = "https://captain001-bnd-z8f2.onrender.com/api";
 // ==== INTERFACES ====
 export interface PaginatedPosts {
   count: number;
