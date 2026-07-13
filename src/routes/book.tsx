@@ -151,30 +151,28 @@ ${formData.details}
       </a>
 
       {/* ==== HERO SECTION ==== */}
-      <section className="bg-black text-white pt-32 pb-24 px-6 relative overflow-hidden">
-        <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-[#ff6600] opacity-10 blur-[120px] rounded-full pointer-events-none" />
+      <section className="bg-black text-white pt-32 pb-20 sm:pb-32 px-6 relative overflow-hidden">
+        <div className="absolute top-0 right-0 w-[400px] sm:w-[600px] h-[400px] sm:h-[600px] bg-[#ff6600] opacity-10 blur-[100px] rounded-full pointer-events-none" />
         <div className="mx-auto max-w-[90rem] relative z-10">
-          <Link to="/" className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-neutral-400 hover:text-white transition-colors mb-10">
+          <Link to="/" className="inline-flex items-center gap-2 text-[10px] sm:text-xs font-bold uppercase tracking-widest text-neutral-400 hover:text-white transition-colors mb-8 sm:mb-12">
             <i className="fa-solid fa-arrow-left" /> Return to Studio
           </Link>
-          <div className="grid lg:grid-cols-2 gap-16 items-end">
-            <div>
-              <div className="inline-flex items-center gap-3 px-4 py-2 rounded-full border border-white/20 bg-white/5 backdrop-blur-md text-[10px] font-bold uppercase tracking-widest text-white mb-6">
+          <div className="flex flex-col lg:flex-row gap-12 lg:gap-16 items-start lg:items-end justify-between">
+            <div className="max-w-3xl">
+              <div className="inline-flex items-center gap-3 px-4 py-2 rounded-full border border-white/10 bg-white/5 backdrop-blur-md text-[9px] sm:text-[10px] font-bold uppercase tracking-widest text-white mb-6">
                 <span className="h-2 w-2 rounded-full bg-[#ff6600] animate-pulse" /> Partner With Us
               </div>
-              <h1 className="text-5xl sm:text-7xl font-black tracking-tighter leading-[0.95]">
+              <h1 className="text-[clamp(2.5rem,6vw,4.5rem)] font-black tracking-tighter leading-[1.05]">
                 Ready to become <br className="hidden sm:block"/>
                 <span className="text-neutral-400">impossible to ignore?</span>
               </h1>
             </div>
-            <div className="flex gap-8 lg:justify-end pb-2">
+            
+            {/* Stats aligned for mobile and desktop */}
+            <div className="grid grid-cols-2 sm:flex sm:flex-row gap-6 sm:gap-10 pb-2 w-full lg:w-auto lg:justify-end border-t border-white/10 pt-6 lg:border-t-0 lg:pt-0">
               <div>
                 <div className="text-sm font-black uppercase tracking-widest mb-1">Nairobi, KE</div>
                 <div className="text-xs text-neutral-400 font-medium">Headquarters</div>
-              </div>
-              <div>
-                <div className="text-sm font-black uppercase tracking-widest mb-1">East Africa</div>
-                <div className="text-xs text-neutral-400 font-medium">Primary Market</div>
               </div>
               <div>
                 <div className="text-sm font-black uppercase tracking-widest mb-1">&lt; 24 Hrs</div>
@@ -223,14 +221,21 @@ ${formData.details}
 
                 {/* Progress Bar */}
                 <div className="mb-10">
-                  <div className="flex justify-between text-[10px] font-bold uppercase tracking-widest text-neutral-400 mb-3">
-                    <span>Step 0{step} of 05</span>
-                    <span>{step === 5 ? "Review & Submit" : "Next Step"}</span>
+                  <div className="flex justify-between items-end mb-3">
+                    <span className="text-[10px] font-bold uppercase tracking-widest text-[#ff6600]">Step 0{step} of 05</span>
+                    <span className="text-xs font-bold tracking-tight text-neutral-400">{step === 5 ? "Review & Submit" : "Next Step"}</span>
                   </div>
-                  <div className="h-1 w-full bg-neutral-100 rounded-full overflow-hidden flex">
-                    <div className="h-full bg-black transition-all duration-500 ease-out" style={{ width: `${(step / 5) * 100}%` }} />
+                  <div className="h-1.5 w-full bg-neutral-100 rounded-full overflow-hidden">
+                    <div 
+                      className="h-full bg-black transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)]" 
+                      style={{ width: `${(step / 5) * 100}%` }} 
+                    />
                   </div>
                 </div>
+
+                {/* Example of fixed input styling for Step 1 & 2 */}
+                {/* Replace all inputs with these classes: */}
+                {/* className="w-full bg-neutral-50 border border-neutral-200 rounded-xl px-5 py-3.5 text-black focus:outline-none focus:ring-2 focus:ring-[#ff6600]/30 focus:border-[#ff6600] transition-all text-sm font-medium placeholder:text-neutral-400" */}
 
                 {/* STEPS */}
                 <form onSubmit={handleSubmit}>
@@ -281,27 +286,44 @@ ${formData.details}
                   )}
 
                   {step === 3 && (
-                    <div className="space-y-8 animate-in slide-in-from-right-4 fade-in">
-                      <h3 className="text-2xl font-black tracking-tight mb-6">What are we solving?</h3>
+                    <div className="space-y-8 animate-in slide-in-from-right-4 fade-in duration-500">
+                      <h3 className="text-2xl sm:text-3xl font-black tracking-tight mb-6">What are we solving?</h3>
                       
                       <div>
-                        <label className="block text-[11px] font-bold text-neutral-500 uppercase tracking-widest mb-4">Primary Discipline Needed *</label>
-                        <div className="grid sm:grid-cols-2 gap-4">
+                        <label className="block text-[10px] font-bold text-neutral-400 uppercase tracking-widest mb-4">Primary Discipline Needed *</label>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                           {serviceOptions.map((opt) => (
-                            <div key={opt.id} onClick={() => setFormData(p => ({ ...p, service: opt.id }))} className={`cursor-pointer p-4 rounded-2xl border-2 transition-all ${formData.service === opt.id ? "border-black bg-neutral-50 shadow-md" : "border-neutral-100 hover:border-neutral-300"}`}>
-                              <i className={`fa-solid ${opt.icon} mb-3 text-lg ${formData.service === opt.id ? "text-[#ff6600]" : "text-neutral-400"}`} />
-                              <h4 className="font-bold text-sm mb-1">{opt.title}</h4>
-                              <p className="text-xs text-neutral-500 font-medium">{opt.desc}</p>
+                            <div 
+                              key={opt.id} 
+                              onClick={() => setFormData(p => ({ ...p, service: opt.id }))} 
+                              className={`cursor-pointer p-5 rounded-2xl border transition-all duration-200 ${
+                                formData.service === opt.id 
+                                  ? "border-[#ff6600] bg-[#ff6600]/5 shadow-sm ring-1 ring-[#ff6600]" 
+                                  : "border-neutral-200 bg-white hover:border-neutral-300 hover:bg-neutral-50"
+                              }`}
+                            >
+                              <i className={`fa-solid ${opt.icon} mb-4 text-xl ${formData.service === opt.id ? "text-[#ff6600]" : "text-neutral-400"}`} />
+                              <h4 className={`font-black text-sm mb-1 ${formData.service === opt.id ? "text-black" : "text-neutral-700"}`}>{opt.title}</h4>
+                              <p className="text-xs text-neutral-500 leading-relaxed">{opt.desc}</p>
                             </div>
                           ))}
                         </div>
                       </div>
 
+                      {/* Goals section formatting... */}
                       <div>
-                        <label className="block text-[11px] font-bold text-neutral-500 uppercase tracking-widest mb-4">Strategic Goals (Select Multiple) *</label>
-                        <div className="flex flex-wrap gap-3">
+                        <label className="block text-[10px] font-bold text-neutral-400 uppercase tracking-widest mb-4">Strategic Goals (Select Multiple) *</label>
+                        <div className="flex flex-wrap gap-2">
                           {goalOptions.map(goal => (
-                            <div key={goal} onClick={() => handleGoalToggle(goal)} className={`cursor-pointer px-4 py-2 rounded-full border text-xs font-bold transition-all ${formData.goals.includes(goal) ? "bg-black text-white border-black" : "bg-white text-neutral-500 border-neutral-200 hover:border-black hover:text-black"}`}>
+                            <div 
+                              key={goal} 
+                              onClick={() => handleGoalToggle(goal)} 
+                              className={`cursor-pointer px-5 py-2.5 rounded-full border text-xs font-bold transition-all duration-200 select-none ${
+                                formData.goals.includes(goal) 
+                                  ? "bg-black text-white border-black" 
+                                  : "bg-white text-neutral-600 border-neutral-200 hover:border-neutral-400"
+                              }`}
+                            >
                               {goal}
                             </div>
                           ))}
@@ -311,23 +333,39 @@ ${formData.details}
                   )}
 
                   {step === 4 && (
-                    <div className="space-y-8 animate-in slide-in-from-right-4 fade-in">
-                      <h3 className="text-2xl font-black tracking-tight mb-6">Scope & Vision</h3>
+                    <div className="space-y-8 animate-in slide-in-from-right-4 fade-in duration-500">
+                      <h3 className="text-2xl sm:text-3xl font-black tracking-tight mb-6">Scope & Vision</h3>
                       
                       <div>
-                        <label className="block text-[11px] font-bold text-neutral-500 uppercase tracking-widest mb-4">Project Scale *</label>
-                        <div className="flex flex-wrap gap-3">
+                        <label className="block text-[10px] font-bold text-neutral-400 uppercase tracking-widest mb-4">Project Scale *</label>
+                        <div className="flex flex-wrap gap-2 sm:gap-3">
                           {scaleOptions.map((scale) => (
-                            <div key={scale.label} onClick={() => setFormData(p => ({ ...p, scale: scale.label }))} className={`cursor-pointer px-5 py-3 rounded-full border-2 transition-all ${formData.scale === scale.label ? "bg-black text-white border-black" : "bg-white text-neutral-500 border-neutral-200 hover:border-black"}`}>
-                              <div className="font-bold text-sm">{scale.label}</div>
+                            <div 
+                              key={scale.label} 
+                              onClick={() => setFormData(p => ({ ...p, scale: scale.label }))} 
+                              className={`cursor-pointer px-5 py-3 rounded-xl border transition-all duration-200 flex-1 sm:flex-none text-center sm:text-left ${
+                                formData.scale === scale.label 
+                                  ? "bg-black text-white border-black shadow-md" 
+                                  : "bg-white text-neutral-600 border-neutral-200 hover:border-neutral-400 hover:bg-neutral-50"
+                              }`}
+                            >
+                              <div className="font-bold text-sm tracking-tight">{scale.label}</div>
                             </div>
                           ))}
                         </div>
                       </div>
 
                       <div>
-                        <label className="block text-[11px] font-bold text-neutral-500 uppercase tracking-widest mb-2">The Vision *</label>
-                        <textarea name="details" value={formData.details} onChange={handleChange} rows={5} required className="w-full bg-neutral-50 border border-neutral-200 rounded-2xl px-5 py-4 text-black focus:outline-none focus:ring-2 focus:ring-black focus:border-black transition-all font-semibold resize-none" placeholder="Describe your current situation, the desired outcome, and any specific timelines..." />
+                        <label className="block text-[10px] font-bold text-neutral-400 uppercase tracking-widest mb-2">The Vision *</label>
+                        <textarea 
+                          name="details" 
+                          value={formData.details} 
+                          onChange={handleChange} 
+                          rows={6} 
+                          required 
+                          className="w-full bg-neutral-50 border border-neutral-200 rounded-2xl px-5 py-4 text-black focus:outline-none focus:ring-2 focus:ring-[#ff6600]/30 focus:border-[#ff6600] transition-all text-sm resize-none" 
+                          placeholder="Describe your current situation, the desired outcome, and any specific timelines..." 
+                        />
                       </div>
                     </div>
                   )}

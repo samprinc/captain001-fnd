@@ -1,4 +1,4 @@
-import { Link, useRouterState } from "@tanstack/react-router";
+import { Link, useRouterState, useNavigate} from "@tanstack/react-router";
 import { useEffect, useState, useCallback, useRef } from "react";
 
 // Main Nav Links
@@ -22,7 +22,7 @@ const MEGA: { title: string; items: MegaItem[] }[] = [
     title: "Studio",
     items: [
       { label: "About Captain 001", to: "/about" },
-      { label: "Founder — Stephen Ndemo Jr.", to: "/about" },
+      { label: "Founder  Stephen Ndemo Jr.", to: "/about" },
       { label: "Our Portfolio", to: "/gallery" },
       { label: "Contact Us", to: "/about" },
     ],
@@ -52,6 +52,8 @@ export function Header() {
   const [moreOpen, setMoreOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const navigate = useNavigate();
   
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const headerRef = useRef<HTMLElement>(null);
@@ -108,6 +110,19 @@ export function Header() {
     setMoreOpen(false);
     setMobileOpen(false); // Close mobile menu too
     window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
+  };
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      // This navigates to the insights page with your search term as a query param
+      navigate({ 
+        to: "/insights", 
+        search: { search: searchQuery } 
+      });
+      setSearchOpen(false);
+      setSearchQuery("");
+    }
   };
 
   return (
@@ -200,20 +215,23 @@ export function Header() {
         </div>
 
         {/* Search Palette */}
-        {searchOpen && (
-          <div className="absolute left-0 w-full top-full pt-4 px-6 animate-in slide-in-from-top-2 fade-in duration-300">
-            <div className="mx-auto max-w-3xl rounded-2xl bg-white shadow-2xl border border-neutral-100 overflow-hidden">
-              <div className="flex items-center gap-4 px-6 py-5 border-b border-neutral-100">
-                <i className="fa-solid fa-magnifying-glass text-neutral-400" />
-                <input
-                  autoFocus
-                  placeholder="Search projects, insights, capabilities..."
-                  className="flex-1 bg-transparent outline-none text-base sm:text-lg font-medium text-black placeholder:text-neutral-400"
-                />
-              </div>
-            </div>
-          </div>
-        )}
+    {searchOpen && (
+      <div className="absolute left-0 w-full top-full pt-4 px-6 animate-in slide-in-from-top-2 fade-in duration-300">
+        <div className="mx-auto max-w-3xl rounded-2xl bg-white shadow-2xl border border-neutral-100 overflow-hidden">
+          {/* Wrapped in a form to handle the Enter key */}
+          <form onSubmit={handleSearch} className="flex items-center gap-4 px-6 py-5 border-b border-neutral-100">
+            <i className="fa-solid fa-magnifying-glass text-neutral-400" />
+            <input
+              autoFocus
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Search projects, insights, capabilities..."
+              className="flex-1 bg-transparent outline-none text-base sm:text-lg font-medium text-black placeholder:text-neutral-400"
+            />
+          </form>
+        </div>
+      </div>
+    )}
 
         {/* Mega Menu (Desktop Only) */}
         {moreOpen && (

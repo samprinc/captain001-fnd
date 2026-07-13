@@ -229,55 +229,45 @@ function InsightsPage() {
       </section>
 
       {/* ==== PHASE 5 & 6: PREMIUM SEARCH & EDITORIAL NAVIGATION ==== */}
-      <section className="sticky top-20 z-40 bg-white/90 backdrop-blur-xl border-b border-neutral-200 shadow-[0_10px_40px_rgba(0,0,0,0.03)]">
-        <div className="mx-auto max-w-[90rem] px-6 sm:px-12 py-4">
-          <div className="flex flex-col lg:flex-row gap-4 lg:gap-8 items-start lg:items-center justify-between">
-            
-            {/* Search */}
-            <div className="w-full lg:w-[350px] relative group shrink-0">
-              <div className="absolute inset-y-0 left-4 flex items-center pointer-events-none">
-                {isFetching ? (
-                  <i className="fa-solid fa-circle-notch animate-spin text-[#ff6600]" aria-hidden="true" />
-                ) : (
-                  <i className="fa-solid fa-magnifying-glass text-neutral-400 group-focus-within:text-black transition-colors" aria-hidden="true" />
-                )}
-              </div>
-              <input
-                aria-label="Search publication"
-                value={searchInput}
-                onChange={(e) => {
-                  setSearchInput(e.target.value);
-                  setPage(1);
-                }}
-                placeholder="Search articles, topics, authors..."
-                className="w-full h-11 pl-10 pr-4 rounded-md border-b-2 border-neutral-200 bg-transparent outline-none text-sm font-semibold text-black placeholder:text-neutral-400 focus:border-black transition-all"
-              />
-            </div>
-
-            {/* Editorial Categories */}
-            <div className="w-full lg:w-auto overflow-x-auto scrollbar-hide -mx-6 px-6 lg:mx-0 lg:px-0">
-              <div className="flex gap-4 min-w-max pb-2 lg:pb-0 items-center">
-                <button
-                  onClick={() => resetAndFilter("All")}
-                  className={`text-xs font-bold uppercase tracking-widest transition-colors ${category === "All" ? "text-black border-b-2 border-black pb-1" : "text-neutral-400 hover:text-black"}`}
-                >
-                  Latest
-                </button>
-                {categoryData.map(([catName, count]) => (
-                  <button
-                    key={catName}
-                    onClick={() => resetAndFilter(catName)}
-                    className={`text-xs font-bold uppercase tracking-widest transition-colors flex items-center gap-1.5 ${category === catName ? "text-black border-b-2 border-black pb-1" : "text-neutral-400 hover:text-black"}`}
-                  >
-                    {catName} <span className="text-[9px] bg-neutral-100 text-neutral-500 px-1.5 py-0.5 rounded-full">{count}</span>
-                  </button>
-                ))}
-              </div>
-            </div>
-            
-          </div>
+<section className="sticky top-20 z-40 bg-white/95 backdrop-blur-md border-b border-neutral-100 shadow-[0_4px_6px_-1px_rgba(0,0,0,0.05)]">
+  <div className="mx-auto max-w-[90rem] px-6 sm:px-12 py-3">
+    <div className="flex flex-col md:flex-row gap-4 items-center justify-between">
+      
+      {/* Search Input */}
+      <div className="w-full md:w-[320px] relative group">
+        <div className="absolute inset-y-0 left-3 flex items-center pointer-events-none">
+          <i className="fa-solid fa-magnifying-glass text-neutral-400 text-xs" />
         </div>
-      </section>
+        <input
+          aria-label="Search publication"
+          value={searchInput}
+          onChange={(e) => { setSearchInput(e.target.value); setPage(1); }}
+          placeholder="Search articles..."
+          className="w-full h-10 pl-9 pr-4 rounded-full bg-neutral-100 text-sm font-medium text-black placeholder:text-neutral-500 focus:bg-white focus:ring-2 focus:ring-[#ff6600]/20 outline-none transition-all"
+        />
+      </div>
+
+      {/* Editorial Categories */}
+      <div className="w-full md:w-auto overflow-x-auto scrollbar-hide flex gap-2">
+        <button
+          onClick={() => resetAndFilter("All")}
+          className={`px-4 py-2 text-[10px] font-bold uppercase tracking-widest rounded-full transition-all ${category === "All" ? "bg-black text-white" : "bg-neutral-100 text-neutral-600 hover:bg-neutral-200"}`}
+        >
+          All
+        </button>
+        {categoryData.map(([catName]) => (
+          <button
+            key={catName}
+            onClick={() => resetAndFilter(catName)}
+            className={`px-4 py-2 text-[10px] font-bold uppercase tracking-widest rounded-full transition-all whitespace-nowrap ${category === catName ? "bg-black text-white" : "bg-neutral-100 text-neutral-600 hover:bg-neutral-200"}`}
+          >
+            {catName}
+          </button>
+        ))}
+      </div>
+    </div>
+  </div>
+</section>
 
       <div ref={gridTop} className="scroll-mt-40" aria-hidden="true" />
 
@@ -403,27 +393,24 @@ function InsightsPage() {
           </div>
         )}
 
-        {/* ==== PHASE 8: THE MAGAZINE GRID ==== */}
-        <div className="grid gap-y-12 gap-x-6 sm:grid-cols-2 lg:grid-cols-3 mb-20">
-          {gridItems.map((p, index) => (
-            <div key={`grid-${p.id}`} className="flex flex-col">
-              <EnhancedEditorialCard post={p} />
-              
-              {/* ==== PHASE 7: MONOTONY BREAKER 1 (Creative Intelligence) ==== */}
-              {index === 1 && !searching && (
-                <div className="col-span-full my-12 bg-black text-white rounded-2xl p-8 sm:p-12 flex flex-col md:flex-row items-center justify-between gap-8 shadow-2xl relative overflow-hidden group">
-                  <div className="absolute top-0 right-0 w-64 h-64 bg-[#ff6600] opacity-20 blur-[80px] group-hover:opacity-40 transition-opacity duration-700" />
-                  <div className="relative z-10 max-w-2xl">
-                    <div className="text-[10px] font-bold uppercase tracking-widest text-[#ff6600] mb-3">Creative Intelligence</div>
-                    <h3 className="text-2xl sm:text-3xl font-black tracking-tight mb-4">Need execution, not just theory?</h3>
-                    <p className="text-sm text-neutral-400 font-medium leading-relaxed">
-                      We apply these exact strategies to build market-dominating brands for our clients. Discover our production and architecture capabilities.
-                    </p>
-                  </div>
-                  <Link to="/services" className="relative z-10 shrink-0 w-full sm:w-auto text-center px-8 py-4 bg-white text-black text-[10px] uppercase tracking-widest font-black rounded-full hover:bg-[#ff6600] hover:text-white transition-colors duration-300">
-                    View Services
-                  </Link>
-                </div>
+       {/* ==== PHASE 8: THE MAGAZINE GRID ==== */}
+<div className="grid gap-6 lg:gap-10 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 mb-24">
+  {gridItems.map((p, index) => (
+    <div key={`grid-${p.id}`} className="min-w-0 flex flex-col"> {/* Added min-w-0 */}
+      <EnhancedEditorialCard post={p} />
+      
+      {/* Breaker Cards - Ensure full width and clean alignment */}
+      {index === 1 && !searching && (
+        <div className="col-span-full my-8 bg-black text-white rounded-3xl p-8 sm:p-12 flex flex-col md:flex-row items-center justify-between gap-8 relative overflow-hidden">
+          <div className="relative z-10 flex-1 min-w-0">
+            <h3 className="text-2xl sm:text-3xl font-black mb-3">Need execution?</h3>
+            <p className="text-sm text-neutral-400 max-w-md">Our strategies build market-dominating brands. Let's talk.</p>
+          </div>
+          <Link to="/services" className="shrink-0 px-8 py-3 bg-white text-black text-[10px] font-black uppercase tracking-widest rounded-full hover:bg-[#ff6600] hover:text-white transition-colors">
+            View Services
+          </Link>
+        </div>
+      
               )}
 
               {/* ==== PHASE 7: MONOTONY BREAKER 2 (API Client Proof) ==== */}
